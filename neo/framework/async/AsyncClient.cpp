@@ -1050,6 +1050,14 @@ void idAsyncClient::ProcessReliableServerMessages( void ) {
 
 /*
 ==================
+idAsyncClient::ProcessLoginResponseMessage
+==================
+*/
+void idAsyncClient::ProcessLoginResponseMessage( const netadr_t from, const idBitMsg &msg ) {	
+	clientState = CS_CONNECTING;
+}
+/*
+==================
 idAsyncClient::ProcessChallengeResponseMessage
 ==================
 */
@@ -1089,7 +1097,8 @@ void idAsyncClient::ProcessChallengeResponseMessage( const netadr_t from, const 
 	common->Printf( "received challenge response 0x%x from %s\n", serverChallenge, Sys_NetAdrToString( from ) );
 
 	// start sending connect packets instead of challenge request packets
-	clientState = CS_CONNECTING;
+	//clientState = CS_CONNECTING;
+	clientState = CS_LOGGING;
 	lastConnectTime = -9999;
 
 	// take this address as the new server address.  This allows
@@ -1527,6 +1536,8 @@ void idAsyncClient::ConnectionlessMessage( const netadr_t from, const idBitMsg &
 
 	msg.ReadString( string, sizeof( string ) );
 
+	printf( "connectionlessmessage: [%s]\n", string );
+
 	// info response from a server, are accepted from any source
 	if ( idStr::Icmp( string, "infoResponse" ) == 0 ) {
 		ProcessInfoResponseMessage( from, msg );
@@ -1561,6 +1572,11 @@ void idAsyncClient::ConnectionlessMessage( const netadr_t from, const idBitMsg &
 	// challenge response from the server we are connecting to
 	if ( idStr::Icmp( string, "challengeResponse" ) == 0 ) {
 		ProcessChallengeResponseMessage( from, msg );
+		return;
+	}
+
+	if ( idStr::Icmp( string, "loginResponse" ) == 0 ) {
+		ProcessLoginResponseMessage( from, msg );
 		return;
 	}
 
@@ -1652,7 +1668,7 @@ idAsyncClient::SetupConnection
 void idAsyncClient::SetupConnection( void ) {
 	idBitMsg	msg;
 	byte		msgBuf[MAX_MESSAGE_SIZE];
-
+	
 	if ( clientTime - lastConnectTime < SETUP_CONNECTION_RESEND_TIME ) {
 		return;
 	}
@@ -1663,6 +1679,13 @@ void idAsyncClient::SetupConnection( void ) {
 		msg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
 		msg.WriteString( "challenge" );
 		msg.WriteLong( clientId );
+		clientPort.SendPacket( serverAddress, msg.GetData(), msg.GetSize() );
+	} else if ( clientState == CS_LOGGING ) {
+		msg.Init( msgBuf, sizeof( msgBuf ) );
+		msg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
+		msg.WriteString( "login" );
+		msg.WriteData( sessLocal.loginUsername, 16 ); 
+		msg.WriteData( sessLocal.loginPassword, 16 );
 		clientPort.SendPacket( serverAddress, msg.GetData(), msg.GetSize() );
 	} else if ( clientState == CS_CONNECTING ) {
 		common->Printf( "sending connect to %s with challenge 0x%x\n", Sys_NetAdrToString( serverAddress ), serverChallenge );

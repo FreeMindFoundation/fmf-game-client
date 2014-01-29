@@ -1538,6 +1538,7 @@ void idAsyncServer::ProcessChallengeMessage( const netadr_t from, const idBitMsg
 			common->Printf( "net_LANServer is enabled. Client %s is not a LAN address, will be rejected\n", Sys_NetAdrToString( from ) );
 			challenges[ i ].authState = CDK_ONLYLAN;
 		} else {
+			
 			// emit a cd key confirmation request
 			outMsg.BeginWriting();
 			outMsg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
@@ -2150,7 +2151,7 @@ bool idAsyncServer::ConnectionlessMessage( const netadr_t from, const idBitMsg &
 		PrintOOB( from, SERVER_PRINT_MISC, "#str_04849" );
 		return false;
 	}
-
+	
 	// challenge from a client
 	if ( idStr::Icmp( string, "challenge" ) == 0 ) {
 		ProcessChallengeMessage( from, msg );
@@ -2173,7 +2174,7 @@ bool idAsyncServer::ConnectionlessMessage( const netadr_t from, const idBitMsg &
 	if ( idStr::Icmp( string, "downloadRequest" ) == 0 ) {		
 		ProcessDownloadRequestMessage( from, msg );
 	}
-	
+
 	// auth server
 	if ( idStr::Icmp( string, "auth" ) == 0 ) {
 		if ( !Sys_CompareNetAdrBase( from, idAsyncNetwork::GetMasterAddress() ) ) {

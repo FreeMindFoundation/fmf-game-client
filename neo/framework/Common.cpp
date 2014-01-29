@@ -2770,6 +2770,8 @@ void idCommonLocal::Init( int argc, const char **argv, const char *cmdline ) {
 		idLib::cvarSystem	= cvarSystem;
 		idLib::fileSystem	= fileSystem;
 
+		printf( "qqqq\n" );
+
 		// initialize idLib
 		idLib::Init();
 

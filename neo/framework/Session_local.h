@@ -118,6 +118,7 @@ public:
 	virtual void		WriteCDKey( void );
 	virtual const char *GetCDKey( bool xp );
 	virtual bool		CheckKey( const char *key, bool netConnect, bool offline_valid[ 2 ] );
+	virtual bool		VerifyLogin( const char *data );
 	virtual bool		CDKeysAreValid( bool strict );
 	virtual void		ClearCDKey( bool valid[ 2 ] );
 	virtual void		SetCDKeyGuiVars( void );
@@ -127,6 +128,8 @@ public:
 	virtual int			GetSaveGameVersion( void );
 
 	virtual const char *GetCurrentMapName();
+
+	void				LoginBox( void );
 
 	//=====================================
 
@@ -259,6 +262,9 @@ public:
 	int					wipeStopTic;
 	bool				wipeHold;
 
+	char				loginUsername[ 16 ];
+	char				loginPassword[ 16 ];
+
 #if ID_CONSOLE_LOCK
 	int					emptyDrawCount;				// watchdog to force the main menu to restart
 #endif
@@ -304,6 +310,8 @@ public:
 
 	// return true if we actually waiting on an auth reply
 	bool				MaybeWaitOnCDKey( void );
+
+	
 
 	//------------------
 	// Session_menu.cpp

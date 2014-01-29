@@ -55,7 +55,8 @@ typedef enum {
 	MSG_PROMPT,
 	MSG_CDKEY,
 	MSG_INFO,
-	MSG_WAIT
+	MSG_WAIT,
+	MSG_LOGINBOX
 } msgBoxType_t;
 
 typedef const char * (*HandleGuiCommand_t)( const char * );
@@ -131,6 +132,9 @@ public:
 	// store the new set of keys if they are found valid
 	virtual bool	CheckKey( const char *key, bool netConnect, bool offline_valid[ 2 ] ) = 0;
 
+	// login details to verify
+	virtual bool	VerifyLogin( const char *data ) = 0;
+
 	// verify the current set of keys for validity
 	// strict -> keys in state CDKEY_CHECKING state are not ok
 	virtual bool	CDKeysAreValid( bool strict ) = 0;
@@ -148,6 +152,8 @@ public:
 	virtual const char *GetCurrentMapName( void ) = 0;
 
 	virtual int		GetSaveGameVersion( void ) = 0;
+
+	virtual void	LoginBox( void ) = 0;
 
 	// The render world and sound world used for this session.
 	idRenderWorld *	rw;

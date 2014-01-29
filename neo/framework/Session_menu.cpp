@@ -571,6 +571,8 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 	for( icmd = 0; icmd < args.Argc(); ) {
 		const char *cmd = args.Argv( icmd++ );
 
+		common->Printf( "HandleMainMenuCommands: [%s]\n", cmd );
+
 		if ( HandleSaveGameMenuCommand( args, icmd ) ) {
 			continue;
 		}
@@ -1036,6 +1038,11 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 #endif
 			continue;
 		}
+		
+		if ( !idStr::Icmp( cmd, "loginbox" ) ) {
+			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "loginbox force" );
+			cmdSystem->ExecuteCommandBuffer();
+		}
 
 		// triggered from mainmenu or mpmain
 		if ( !idStr::Icmp( cmd, "punkbuster" ) ) {
@@ -1304,6 +1311,24 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			break;
+		case MSG_LOGINBOX:
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "visible_msgbox", "0" );
+			guiMsg->SetStateString( "visible_cdkey", "1" );
+			guiMsg->SetStateString( "visible_hasxp", "1" );
+
+			guiMsg->SetStateString( "str_cdkey", "" );
+			guiMsg->SetStateString( "visible_cdchk", "1" );
+			
+			guiMsg->SetStateString( "str_cdchk", "" );
+
+			guiMsg->SetStateString( "str_xpkey", "" );
+			guiMsg->SetStateString( "visible_xpchk", "1" );
+			
+			guiMsg->SetStateString( "str_xpchk", "" );
+			guiMsg->HandleNamedEvent( "LoginBox" );
+			break;
 		case MSG_PROMPT:
 			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
 			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
@@ -1382,6 +1407,15 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 						 guiMsg->State().GetString( "visible_xpchk" ),						 
 						 guiMsg->State().GetString( "str_xpkey" ),
 						 guiMsg->State().GetString( "str_xpchk" ) );
+				return msgFireBack[ 0 ].c_str();
+			} else {
+				return NULL;
+			}
+		} else if ( type  == MSG_LOGINBOX ) {
+			if ( msgRetIndex == 0 ) {
+				sprintf( msgFireBack[ 0 ], "%16s%16s",
+						 guiMsg->State().GetString( "str_cdkey" ),					 
+						 guiMsg->State().GetString( "str_xpkey" ) );
 				return msgFireBack[ 0 ].c_str();
 			} else {
 				return NULL;

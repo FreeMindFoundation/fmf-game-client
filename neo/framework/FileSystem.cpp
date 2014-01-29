@@ -3891,7 +3891,8 @@ void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], 
 			if ( dllFile ) {
 				common->Printf( "found DLL in pak file: %s\n", dllFile->GetFullPath() );
 				dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
-				CopyFile( dllFile, dllPath );
+				// don't copy obsolete dll
+				//CopyFile( dllFile, dllPath );
 				CloseFile( dllFile );
 				dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
 				if ( !dllFile ) {

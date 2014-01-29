@@ -203,6 +203,9 @@
 "build\Win32\$(Configuration)\TypeInfo.exe" d3xp
 </Command>
     </PreBuildEvent>
+    <ClCompile>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="d3xp\ai\AAS.cpp" />

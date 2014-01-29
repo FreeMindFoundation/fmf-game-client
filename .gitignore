@@ -1,3 +1,5 @@
 build
 /neo/*.sdf
 /neo/ipch
+/neo/doom.suo
+/neo/doom.v11.suo

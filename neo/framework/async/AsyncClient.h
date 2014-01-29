@@ -41,6 +41,7 @@ typedef enum {
 	CS_DISCONNECTED,
 	CS_PURERESTART,
 	CS_CHALLENGING,
+	CS_LOGGING,
 	CS_CONNECTING,
 	CS_CONNECTED,
 	CS_INGAME
@@ -190,6 +191,7 @@ private:
 	void				ProcessUnreliableServerMessage( const idBitMsg &msg );
 	void				ProcessReliableServerMessages( void );
 	void				ProcessChallengeResponseMessage( const netadr_t from, const idBitMsg &msg );
+	void				ProcessLoginResponseMessage( const netadr_t from, const idBitMsg &msg );
 	void				ProcessConnectResponseMessage( const netadr_t from, const idBitMsg &msg );
 	void				ProcessDisconnectMessage( const netadr_t from, const idBitMsg &msg );
 	void				ProcessInfoResponseMessage( const netadr_t from, const idBitMsg &msg );

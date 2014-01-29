@@ -217,6 +217,22 @@ bool idSessionLocal::MaybeWaitOnCDKey( void ) {
 
 /*
 ===================
+idSessionLocal::LoginBox
+===================
+*/
+void idSessionLocal::LoginBox( void ) {
+}
+
+static void LoginBox_f( const idCmdArgs &args ) {
+	const char	*retkey;
+
+	retkey = sessLocal.MessageBox( MSG_LOGINBOX, common->GetLanguageDict()->GetString( "#str_07242" ), common->GetLanguageDict()->GetString( "#str_07241" ), true, NULL, NULL, true );
+	sessLocal.VerifyLogin( retkey );
+	idAsyncNetwork::client.ConnectToServer( "192.168.1.101" );
+}
+
+/*
+===================
 Session_PromptKey_f
 ===================
 */
@@ -246,6 +262,7 @@ static void Session_PromptKey_f( const idCmdArgs &args ) {
 		}
 		retkey = sessLocal.MessageBox( MSG_CDKEY, prompt_msg, common->GetLanguageDict()->GetString( "#str_04305" ), true, NULL, NULL, true );
 		if ( retkey ) {
+			common->Printf( "rcv: [%s]\n", retkey );
 			if ( sessLocal.CheckKey( retkey, false, valid ) ) {
 				// if all went right, then we may have sent an auth request to the master ( unless the prompt is used during a net connect )
 				bool canExit = true;
@@ -2920,6 +2937,8 @@ void idSessionLocal::Init() {
 	cmdSystem->AddCommand( "rescanSI", Session_RescanSI_f, CMD_FL_SYSTEM, "internal - rescan serverinfo cvars and tell game" );
 
 	cmdSystem->AddCommand( "promptKey", Session_PromptKey_f, CMD_FL_SYSTEM, "prompt and sets the CD Key" );
+	
+	cmdSystem->AddCommand( "loginbox", LoginBox_f, CMD_FL_SYSTEM, "prompt and login" );
 
 	cmdSystem->AddCommand( "hitch", Session_Hitch_f, CMD_FL_SYSTEM|CMD_FL_CHEAT, "hitches the game" );
 
@@ -3141,6 +3160,25 @@ void idSessionLocal::EmitGameAuth( void ) {
 			xpkey_state = CDKEY_OK;
 		}
 	}	
+}
+/*
+================
+idSessionLocal::VerifyLogin
+the function will only modify keys to _OK or _CHECKING if the offline checks are passed
+if the function returns false, the offline checks failed, and offline_valid holds which keys are bad
+================
+*/
+bool idSessionLocal::VerifyLogin( const char *data ) {
+
+	if( idStr::Length( data ) < 2 || idStr::Length( data + 16 ) < 2 ) {
+		return false;
+	}
+
+	// this happens on the client's side, we don't care about copying
+	idStr::Copynz( loginUsername, data + 1, 16 );
+	idStr::Copynz( loginPassword, data + 17, 16 );
+	
+	return true;
 }
 
 /*
