@@ -157,6 +157,8 @@ private:
 
 	idUserInterface *	guiNetMenu;
 
+	int					loginId;
+
 	clientUpdateState_t updateState;
 	int					updateSentTime;
 	idStr				updateMSG;

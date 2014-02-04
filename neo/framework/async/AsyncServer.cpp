@@ -817,7 +817,7 @@ void idAsyncServer::CheckClientTimeouts( void ) {
 
 	for ( i = 0; i < MAX_ASYNC_CLIENTS; i++ ) {
 		serverClient_t &client = clients[i];
-
+		
 		if ( i == localClientNum ) {
 			continue;
 		}
@@ -1699,7 +1699,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 		PrintOOB( from, SERVER_PRINT_MISC, "#str_04842" );
 		return;
 	}
-
+	
 	if ( ( ichallenge = ValidateChallenge( from, challenge, clientId ) ) == -1 ) {
 		return;
 	}

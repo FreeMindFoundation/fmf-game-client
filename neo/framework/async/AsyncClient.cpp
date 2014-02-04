@@ -1054,6 +1054,12 @@ idAsyncClient::ProcessLoginResponseMessage
 ==================
 */
 void idAsyncClient::ProcessLoginResponseMessage( const netadr_t from, const idBitMsg &msg ) {	
+	if ( clientState != CS_LOGGING ) {
+		common->Printf( "Unwanted login response received.\n" );
+		return;
+	}
+
+	loginId = msg.ReadLong();
 	clientState = CS_CONNECTING;
 }
 /*
@@ -1702,6 +1708,7 @@ void idAsyncClient::SetupConnection( void ) {
 		msg.WriteLong( clientDataChecksum );
 		msg.WriteLong( serverChallenge );
 		msg.WriteShort( clientId );
+		msg.WriteLong( loginId );
 		msg.WriteLong( cvarSystem->GetCVarInteger( "net_clientMaxRate" ) );
 		msg.WriteString( cvarSystem->GetCVarString( "com_guid" ) );
 		msg.WriteString( cvarSystem->GetCVarString( "password" ), -1, false );
