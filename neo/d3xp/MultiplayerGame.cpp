@@ -3180,6 +3180,7 @@ void idMultiplayerGame::MessageMode( const idCmdArgs &args ) {
 		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
 		return;
 	}
+	
 	if ( !mainGui ) {
 		common->Printf( "no local client\n" );
 		return;
@@ -3713,6 +3714,8 @@ void idMultiplayerGame::ProcessChatMessage( int clientNum, bool team, const char
 	idEntity 	*ent;
 	idPlayer	*p;
 	idStr		prefixed_name;
+
+	common->Printf( "process chat message\n" );
 
 	assert( !gameLocal.isClient );
 

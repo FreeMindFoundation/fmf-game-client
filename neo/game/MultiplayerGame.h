@@ -169,6 +169,7 @@ public:
 	static void		ForceReady_f( const idCmdArgs &args );
 	static void		DropWeapon_f( const idCmdArgs &args );
 	static void		MessageMode_f( const idCmdArgs &args );
+	static void		FilesMode_f( const idCmdArgs &args );
 	static void		VoiceChat_f( const idCmdArgs &args );
 	static void		VoiceChatTeam_f( const idCmdArgs &args );
 
@@ -282,7 +283,8 @@ private:
 	idUserInterface *mainGui;				// ready / nick / votes etc.
 	idListGUI		*mapList;
 	idUserInterface *msgmodeGui;			// message mode
-	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui
+	idUserInterface *filesGui;
+	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui
 	int				nextMenu;				// if 0, will do mainGui
 	bool			bCurrentMenuMsg;		// send menu state updates to server
 
@@ -342,6 +344,7 @@ private:
 	// when clients disconnect or join spectate during game, check if we need to end the game
 	void			CheckAbortGame( void );
 	void			MessageMode( const idCmdArgs &args );
+	void			FilesMode( const idCmdArgs &args );
 	void			DisableMenu( void );
 	void			SetMapShot( void );
 	// scores in TDM

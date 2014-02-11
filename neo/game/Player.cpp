@@ -5333,7 +5333,7 @@ void idPlayer::UpdatePDAInfo( bool updatePDASel ) {
 				}
 			}
 			objectiveSystem->SetStateString( "PDAEmailTitle", name );
-			objectiveSystem->SetStateString( "PDAEmailText", data );
+			//objectiveSystem->SetStateString( "PDAEmailText", data );
 		}
 	}
 	if ( objectiveSystem->State().GetInt( "listPDA_sel_0", "-1" ) == -1 ) {

@@ -3931,7 +3931,8 @@ void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], 
 						dllFile = ReadFileFromZip( pak, pakFile, dllName );
 						common->Printf( "found DLL in game pak file: %s\n", pak->pakFilename.c_str() );
 						dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
-						CopyFile( dllFile, dllPath );
+						// ???
+						//CopyFile( dllFile, dllPath );
 						CloseFile( dllFile );
 						dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
 						if ( !dllFile ) {

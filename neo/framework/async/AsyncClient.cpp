@@ -2334,10 +2334,12 @@ void idAsyncClient::ProcessDownloadInfoMessage( const netadr_t from, const idBit
 			}
 		}
 	} else {
+		
 		cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect" );
 		// "You are missing some files to connect to this server, and the server doesn't provide downloads."
 		// "Missing required files"
 		session->MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_07223" ), common->GetLanguageDict()->GetString( "#str_07218" ), true );
+		
 	}
 }
 

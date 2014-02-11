@@ -67,6 +67,7 @@ const char *idMultiplayerGame::MPGuis[] = {
 	"guis/mpmain.gui",
 	"guis/mpmsgmode.gui",
 	"guis/netmenu.gui",
+	"guis/files.gui",
 	NULL
 };
 
@@ -102,6 +103,7 @@ idMultiplayerGame::idMultiplayerGame() {
 	mainGui = NULL;
 	mapList = NULL;
 	msgmodeGui = NULL;
+	filesGui = NULL;
 	lastGameType = GAME_SP;
 	Clear();
 }
@@ -170,6 +172,8 @@ void idMultiplayerGame::Reset() {
 	SetMenuSkin();
 	msgmodeGui = uiManager->FindGui( "guis/mpmsgmode.gui", true, false, true );
 	msgmodeGui->SetStateBool( "gameDraw", true );
+	filesGui = uiManager->FindGui( "guis/files.gui", true, false, true );
+	filesGui->SetStateBool( "gameDraw", true );
 	ClearGuis();
 	ClearChatData();
 	warmupEndTime = 0;
@@ -238,6 +242,7 @@ void idMultiplayerGame::Clear() {
 	guiChat = NULL;
 	mainGui = NULL;
 	msgmodeGui = NULL;
+	filesGui = NULL;
 	if ( mapList ) {
 		uiManager->FreeListGUI( mapList );
 		mapList = NULL;
@@ -1504,7 +1509,7 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 	if ( mainGui == NULL ) {
 		return NULL;
 	}
-	gameLocal.Printf( "start menu mp" );
+	
 	int i, j;
 	if ( currentMenu ) {
 		currentMenu = 0;
@@ -1565,6 +1570,10 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 		msgmodeGui->Activate( true, gameLocal.time );
 		cvarSystem->SetCVarBool( "ui_chat", true );
 		return msgmodeGui;
+	} else if ( currentMenu == 3 ) {
+		filesGui->Activate( true, gameLocal.time );
+		//cvarSystem->SetCVarBool( "ui_chat", true );
+		return filesGui;
 	}
 	return NULL;
 }
@@ -1580,6 +1589,8 @@ void idMultiplayerGame::DisableMenu( void ) {
 		mainGui->Activate( false, gameLocal.time );
 	} else if ( currentMenu == 2 ) {
 		msgmodeGui->Activate( false, gameLocal.time );
+	} else if ( currentMenu == 3 ) {
+		filesGui->Activate( false, gameLocal.time );
 	}
 	currentMenu = 0;
 	nextMenu = 0;
@@ -1621,14 +1632,18 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 	assert( currentMenu );
 	if ( currentMenu == 1 ) {
 		currentGui = mainGui;
-	} else {
+	} else if ( currentMenu == 2 ) {
 		currentGui = msgmodeGui;
+	} else if ( currentMenu == 3 ) {
+		currentGui = filesGui;
 	}
-
+	
 	args.TokenizeString( _menuCommand, false );
 
 	for( icmd = 0; icmd < args.Argc(); ) {
 		const char *cmd = args.Argv( icmd++ );
+
+		common->Printf( "idMultiplayerGame::HandleGuiCommands: command[%s]\n", cmd );
 
 		if ( !idStr::Icmp( cmd,	";"	) )	{
 			continue;
@@ -1709,6 +1724,9 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				DisableMenu();
 				return NULL;
 			}
+		} else if (	!idStr::Icmp( cmd, "osfile" ) ) {
+			common->Printf( "hi all osfile\n" );
+			return "continue";
 		} else if (	!idStr::Icmp( cmd, "readytoggle" ) ) {
 			ToggleReady( );
 			DisableMenu( );
@@ -1876,8 +1894,10 @@ bool idMultiplayerGame::Draw( int clientNum ) {
 		if ( currentMenu == 1 ) {
 			UpdateMainGui();
 			mainGui->Redraw( gameLocal.time );
-		} else {
+		} else if ( currentMenu == 2 ) {
 			msgmodeGui->Redraw( gameLocal.time );
+		} else if ( currentMenu == 3 ) {
+			filesGui->Redraw( gameLocal.time );
 		}
 	} else {
 #if 0
@@ -2468,6 +2488,12 @@ void idMultiplayerGame::DropWeapon_f( const idCmdArgs &args ) {
 	networkSystem->ClientSendReliableMessage( outMsg );
 }
 
+
+void idMultiplayerGame::FilesMode_f( const idCmdArgs &args ) {
+	gameLocal.mpGame.FilesMode( args );
+}
+
+
 /*
 ================
 idMultiplayerGame::MessageMode_f
@@ -2475,6 +2501,26 @@ idMultiplayerGame::MessageMode_f
 */
 void idMultiplayerGame::MessageMode_f( const idCmdArgs &args ) {
 	gameLocal.mpGame.MessageMode( args );
+}
+
+void idMultiplayerGame::FilesMode( const idCmdArgs &args ) {
+	if ( !gameLocal.isMultiplayer ) {
+		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
+		return;
+	}
+
+	idStr work;
+	int i;
+
+	for( i = 0; i < 3; i++ ) {
+		work = "0\t1\t2";
+		filesGui->SetStateString( va( "%s_item_%i", "filesList", i ), work );
+	}
+
+	common->Printf( "nextMenu: %d\n", nextMenu );
+	nextMenu = 3;
+
+	gameLocal.sessionCommand = "game_startmenu";
 }
 
 /*
@@ -2485,15 +2531,17 @@ idMultiplayerGame::MessageMode
 void idMultiplayerGame::MessageMode( const idCmdArgs &args ) {
 	const char *mode;
 	int imode;
-
+	
 	if ( !gameLocal.isMultiplayer ) {
 		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
 		return;
 	}
+	
 	if ( !mainGui ) {
 		common->Printf( "no local client\n" );
 		return;
 	}
+	
 	mode = args.Argv( 1 );
 	if ( !mode[ 0 ] ) {
 		imode = 0;
@@ -2983,6 +3031,8 @@ void idMultiplayerGame::ProcessChatMessage( int clientNum, bool team, const char
 	idStr		prefixed_name;
 
 	assert( !gameLocal.isClient );
+
+	common->Printf( "processchatmsg client: [%s]\n", text );
 
 	if ( clientNum >= 0 ) {
 		p = static_cast< idPlayer * >( gameLocal.entities[ clientNum ] );

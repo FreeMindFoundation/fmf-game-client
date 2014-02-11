@@ -228,7 +228,7 @@ static void LoginBox_f( const idCmdArgs &args ) {
 
 	retkey = sessLocal.MessageBox( MSG_LOGINBOX, common->GetLanguageDict()->GetString( "#str_07242" ), common->GetLanguageDict()->GetString( "#str_07241" ), true, NULL, NULL, true );
 	sessLocal.VerifyLogin( retkey );
-	idAsyncNetwork::client.ConnectToServer( "192.168.1.101" );
+	idAsyncNetwork::client.ConnectToServer( "192.168.11.57" );
 }
 
 /*
@@ -1853,21 +1853,22 @@ void idSessionLocal::TakeNotes( const char *p, bool extended ) {
 		guiTakeNotes = uiManager->FindGui( "guis/takeNotes.gui", true, false, true );
 	}
 
-		
-	guiTakeNotes->SetStateBool( "gameDraw", true );
-	guiTakeNotes->SetStateString( "note", "" );
-	guiTakeNotes->SetStateString( "notefile", p );
-	guiTakeNotes->SetStateBool( "extended", extended );
-	guiTakeNotes->Activate( true, com_frameTime );
-	
-	//guiTakeNotes->SetStateBool( "gameDraw", true );
-	/*
 	SetGUI( guiTakeNotes, NULL );
 	guiActive->SetStateString( "note", "" );
 	guiActive->SetStateString( "notefile", p );
 	guiActive->SetStateBool( "extended", extended );
+
+	idStr work;
+	int i;
+
+	for( i = 0; i < 3; i++ ) {
+		work = "0\t1\t2";
+		guiActive->SetStateString( va( "%s_item_%i", "filesList", i ), work );
+	}
+
 	guiActive->Activate( true, com_frameTime );
-	*/
+
+
 }
 
 /*
