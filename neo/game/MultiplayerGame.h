@@ -170,6 +170,7 @@ public:
 	static void		DropWeapon_f( const idCmdArgs &args );
 	static void		MessageMode_f( const idCmdArgs &args );
 	static void		FilesMode_f( const idCmdArgs &args );
+	static void		TerminalMode_f( const idCmdArgs &args );
 	static void		VoiceChat_f( const idCmdArgs &args );
 	static void		VoiceChatTeam_f( const idCmdArgs &args );
 
@@ -221,6 +222,8 @@ public:
 	void			ToggleSpectate( void );
 	void			ToggleReady( void );
 	void			ToggleTeam( void );
+
+	void			TerminalCmd( idUserInterface *gui );
 
 	void			ClearFrags( int clientNum );
 
@@ -284,6 +287,7 @@ private:
 	idListGUI		*mapList;
 	idUserInterface *msgmodeGui;			// message mode
 	idUserInterface *filesGui;
+	idUserInterface *terminalGui;
 	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui
 	int				nextMenu;				// if 0, will do mainGui
 	bool			bCurrentMenuMsg;		// send menu state updates to server
@@ -345,6 +349,7 @@ private:
 	void			CheckAbortGame( void );
 	void			MessageMode( const idCmdArgs &args );
 	void			FilesMode( const idCmdArgs &args );
+	void			TerminalMode( const idCmdArgs &args );
 	void			DisableMenu( void );
 	void			SetMapShot( void );
 	// scores in TDM

@@ -104,6 +104,7 @@ idMultiplayerGame::idMultiplayerGame() {
 	mapList = NULL;
 	msgmodeGui = NULL;
 	filesGui = NULL;
+	terminalGui = NULL;
 	lastGameType = GAME_SP;
 	Clear();
 }
@@ -174,6 +175,8 @@ void idMultiplayerGame::Reset() {
 	msgmodeGui->SetStateBool( "gameDraw", true );
 	filesGui = uiManager->FindGui( "guis/files.gui", true, false, true );
 	filesGui->SetStateBool( "gameDraw", true );
+	terminalGui = uiManager->FindGui( "guis/terminal.gui", true, false, true );
+	terminalGui->SetStateBool( "gameDraw", true );
 	ClearGuis();
 	ClearChatData();
 	warmupEndTime = 0;
@@ -243,6 +246,7 @@ void idMultiplayerGame::Clear() {
 	mainGui = NULL;
 	msgmodeGui = NULL;
 	filesGui = NULL;
+	terminalGui = NULL;
 	if ( mapList ) {
 		uiManager->FreeListGUI( mapList );
 		mapList = NULL;
@@ -1574,7 +1578,12 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 		filesGui->Activate( true, gameLocal.time );
 		//cvarSystem->SetCVarBool( "ui_chat", true );
 		return filesGui;
-	}
+	} else if ( currentMenu == 4 ) {
+		terminalGui->Activate( true, gameLocal.time );
+		//cvarSystem->SetCVarBool( "ui_chat", true );
+		return terminalGui;
+	} 
+
 	return NULL;
 }
 
@@ -1591,7 +1600,10 @@ void idMultiplayerGame::DisableMenu( void ) {
 		msgmodeGui->Activate( false, gameLocal.time );
 	} else if ( currentMenu == 3 ) {
 		filesGui->Activate( false, gameLocal.time );
+	} else if ( currentMenu == 4 ) {
+		terminalGui->Activate( false, gameLocal.time );
 	}
+
 	currentMenu = 0;
 	nextMenu = 0;
 	cvarSystem->SetCVarBool( "ui_chat", false );
@@ -1636,6 +1648,8 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 		currentGui = msgmodeGui;
 	} else if ( currentMenu == 3 ) {
 		currentGui = filesGui;
+	} else if ( currentMenu == 4 ) {
+		currentGui = terminalGui;
 	}
 	
 	args.TokenizeString( _menuCommand, false );
@@ -1724,8 +1738,11 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				DisableMenu();
 				return NULL;
 			}
-		} else if (	!idStr::Icmp( cmd, "osfile" ) ) {
-			common->Printf( "hi all osfile\n" );
+		} else if (	!idStr::Icmp( cmd, "filechange" ) ) {
+			common->Printf( "filechange mp\n" );
+			return "continue";
+		} else if (	!idStr::Icmp( cmd, "terminalmsg" ) ) {
+			TerminalCmd( currentGui );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "readytoggle" ) ) {
 			ToggleReady( );
@@ -1898,6 +1915,8 @@ bool idMultiplayerGame::Draw( int clientNum ) {
 			msgmodeGui->Redraw( gameLocal.time );
 		} else if ( currentMenu == 3 ) {
 			filesGui->Redraw( gameLocal.time );
+		} else if ( currentMenu == 4 ) {
+			terminalGui->Redraw( gameLocal.time );
 		}
 	} else {
 #if 0
@@ -2493,7 +2512,6 @@ void idMultiplayerGame::FilesMode_f( const idCmdArgs &args ) {
 	gameLocal.mpGame.FilesMode( args );
 }
 
-
 /*
 ================
 idMultiplayerGame::MessageMode_f
@@ -2501,6 +2519,22 @@ idMultiplayerGame::MessageMode_f
 */
 void idMultiplayerGame::MessageMode_f( const idCmdArgs &args ) {
 	gameLocal.mpGame.MessageMode( args );
+}
+
+void idMultiplayerGame::TerminalMode_f( const idCmdArgs &args ) {
+	gameLocal.mpGame.TerminalMode( args );
+}
+
+void idMultiplayerGame::TerminalMode( const idCmdArgs &args ) {
+	if ( !gameLocal.isMultiplayer ) {
+		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
+		return;
+	}
+
+	common->Printf( "nextMenu: %d\n", nextMenu );
+	nextMenu = 4;
+
+	gameLocal.sessionCommand = "game_startmenu";
 }
 
 void idMultiplayerGame::FilesMode( const idCmdArgs &args ) {
@@ -3189,6 +3223,36 @@ void idMultiplayerGame::ToggleReady( void ) {
 	} else {
 		cvarSystem->SetCVarString( "ui_ready", "Ready" );
 	}
+}
+
+
+void idMultiplayerGame::TerminalCmd( idUserInterface *gui ) {
+	byte		msgBuf[ 128 ];
+	idBitMsg	outMsg;
+	char		*cmd;
+	idStr		help;
+
+	assert( gui );
+
+	cmd = (char *)(gui->State().GetString( "terminalcmd" ));
+	gui->SetStateString( "terminalcmd", "" );
+
+	if( !idStr::Icmp( cmd, "help" ) ) {
+		help = gui->State().GetString( "terminaltext" );
+		help += "\n\nHelp:\n\nwhoami\nlist\nposition\n\n";
+		gui->SetStateString( "terminaltext", help );
+		return;
+	}
+
+	if( !idStr::Icmp( cmd, "clear" ) ) {
+		gui->SetStateString( "terminaltext", "" );
+		return;
+	}
+
+	outMsg.Init( msgBuf, sizeof( msgBuf ) );
+	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
+	outMsg.WriteString( cmd ); 
+	networkSystem->ClientSendReliableMessage( outMsg );
 }
 
 /*

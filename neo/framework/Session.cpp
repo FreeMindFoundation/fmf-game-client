@@ -1850,14 +1850,14 @@ void idSessionLocal::TakeNotes( const char *p, bool extended ) {
 		uiManager->FreeListGUI( guiList_people );
 
 	} else {
-		guiTakeNotes = uiManager->FindGui( "guis/takeNotes.gui", true, false, true );
+		guiTakeNotes = uiManager->FindGui( "guis/terminal.gui", true, false, true );
 	}
 
 	SetGUI( guiTakeNotes, NULL );
-	guiActive->SetStateString( "note", "" );
-	guiActive->SetStateString( "notefile", p );
-	guiActive->SetStateBool( "extended", extended );
-
+	//guiActive->SetStateString( "note", "" );
+	//guiActive->SetStateString( "notefile", p );
+	//guiActive->SetStateBool( "extended", extended );
+	/*
 	idStr work;
 	int i;
 
@@ -1865,10 +1865,8 @@ void idSessionLocal::TakeNotes( const char *p, bool extended ) {
 		work = "0\t1\t2";
 		guiActive->SetStateString( va( "%s_item_%i", "filesList", i ), work );
 	}
-
+	*/
 	guiActive->Activate( true, com_frameTime );
-
-
 }
 
 /*
