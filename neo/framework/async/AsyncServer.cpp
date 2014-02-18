@@ -1772,7 +1772,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 			numClients++;
 		}
 	}
-
+	
 	// game may be passworded, client banned by IP or GUID
 	// if authState == CDK_PUREOK, the check was already performed once before entering pure checks
 	// but meanwhile, the max players may have been reached

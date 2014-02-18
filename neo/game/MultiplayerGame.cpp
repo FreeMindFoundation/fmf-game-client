@@ -1625,6 +1625,52 @@ void idMultiplayerGame::SetMapShot( void ) {
 	mainGui->SetStateString( "current_levelshot", screenshot );
 }
 
+void idMultiplayerGame::ProcessTerminalMessage( const idBitMsg &msg ) {
+	char tmp[ 1024 ];
+	idStr terminal;
+	int type;
+	idCmdArgs arg;
+	char *start, *end, *pos, buffer[ 256 ];
+
+	if( currentMenu != 4 && currentMenu != 3 )
+		return;
+
+	memset( tmp, 0, sizeof( tmp ) );
+	type = msg.ReadShort();
+	msg.ReadData( tmp, sizeof( tmp ) );
+	
+	common->Printf( "type [%d]\n", type );
+
+	if( 0 == type ) {
+		common->Printf( "type 0\n" );
+		terminal = terminalGui->State().GetString( "terminaltext" );
+		terminal += "\n";
+		terminal += tmp;
+		terminalGui->SetStateString( "terminaltext", terminal );
+	} else if( 1 == type ) {
+		pos = tmp;
+		while( *pos != 0 ) {
+                start = pos;
+                for( end = pos; (*end != 10 && *end != 0); pos++, end++ );
+
+				memset( buffer, 0, sizeof( buffer	 ) );
+				memcpy( buffer, start, end-start );
+				arg.AppendArg( buffer );
+
+                if( *pos == 0 ) {
+                        break;
+                } else {
+                        pos++;
+                }
+		}
+		DisableMenu();
+		idMultiplayerGame::FilesMode_f( arg );
+	} else if( 2 == type ) {
+		common->Printf( "type 2 tmp: [%s]\n", tmp );
+		filesGui->SetStateString( "file_content", tmp );
+	}
+}
+
 /*
 ================
 idMultiplayerGame::HandleGuiCommands
@@ -1738,8 +1784,8 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				DisableMenu();
 				return NULL;
 			}
-		} else if (	!idStr::Icmp( cmd, "filechange" ) ) {
-			common->Printf( "filechange mp\n" );
+		} else if (	!idStr::Icmp( cmd, "selectfile" ) ) {
+			TerminalFileChange( currentGui );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "terminalmsg" ) ) {
 			TerminalCmd( currentGui );
@@ -2531,9 +2577,7 @@ void idMultiplayerGame::TerminalMode( const idCmdArgs &args ) {
 		return;
 	}
 
-	common->Printf( "nextMenu: %d\n", nextMenu );
 	nextMenu = 4;
-
 	gameLocal.sessionCommand = "game_startmenu";
 }
 
@@ -2542,18 +2586,15 @@ void idMultiplayerGame::FilesMode( const idCmdArgs &args ) {
 		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
 		return;
 	}
-
-	idStr work;
+	
 	int i;
 
-	for( i = 0; i < 3; i++ ) {
-		work = "0\t1\t2";
-		filesGui->SetStateString( va( "%s_item_%i", "filesList", i ), work );
+	for( i = 0; i < args.Argc(); i++ ) {
+		
+		filesGui->SetStateString( va( "%s_item_%i", "filesList", i ), args.Argv( i ) );
 	}
 
-	common->Printf( "nextMenu: %d\n", nextMenu );
 	nextMenu = 3;
-
 	gameLocal.sessionCommand = "game_startmenu";
 }
 
@@ -3225,6 +3266,21 @@ void idMultiplayerGame::ToggleReady( void ) {
 	}
 }
 
+void idMultiplayerGame::TerminalFileChange( idUserInterface *gui ) {
+	int			sel;
+	char		*file;
+	byte		msgBuf[ 128 ];
+	idBitMsg	outMsg;
+
+	sel = gui->State().GetInt( va( "%s_sel_0", "filesList" ), "-1" );
+	file = (char *)(gui->State().GetString( va( "%s_item_%d", "filesList", sel ) ));
+
+	outMsg.Init( msgBuf, sizeof( msgBuf ) );
+	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
+	outMsg.WriteShort( 1 );		// type FILE
+	outMsg.WriteString( file ); 
+	networkSystem->ClientSendReliableMessage( outMsg );
+}
 
 void idMultiplayerGame::TerminalCmd( idUserInterface *gui ) {
 	byte		msgBuf[ 128 ];
@@ -3251,6 +3307,7 @@ void idMultiplayerGame::TerminalCmd( idUserInterface *gui ) {
 
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
+	outMsg.WriteShort( 0 );		// type CMD
 	outMsg.WriteString( cmd ); 
 	networkSystem->ClientSendReliableMessage( outMsg );
 }

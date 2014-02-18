@@ -794,7 +794,7 @@ void idGameLocal::ServerProcessReliableMessage( int clientNum, const idBitMsg &m
 
 			msg.ReadString( name, sizeof( name ) );
 			msg.ReadString( text, sizeof( text ) );
-
+			
 			mpGame.ProcessChatMessage( clientNum, id == GAME_RELIABLE_MESSAGE_TCHAT, name, text, NULL );
 
 			break;
@@ -1448,6 +1448,10 @@ void idGameLocal::ClientProcessReliableMessage( int clientNum, const idBitMsg &m
 		}
 		case GAME_RELIABLE_MESSAGE_WARMUPTIME: {
 			mpGame.ClientReadWarmupTime( msg );
+			break;
+		}
+		case GAME_RELIABLE_MESSAGE_TERMINAL: {
+			mpGame.ProcessTerminalMessage( msg );
 			break;
 		}
 		default: {

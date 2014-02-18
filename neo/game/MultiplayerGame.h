@@ -224,6 +224,7 @@ public:
 	void			ToggleTeam( void );
 
 	void			TerminalCmd( idUserInterface *gui );
+	void			TerminalFileChange( idUserInterface *gui );
 
 	void			ClearFrags( int clientNum );
 
@@ -235,6 +236,7 @@ public:
 	void			ServerWriteInitialReliableMessages( int clientNum );
 	void			ClientReadStartState( const idBitMsg &msg );
 	void			ClientReadWarmupTime( const idBitMsg &msg );
+	void			ProcessTerminalMessage( const idBitMsg &msg );
 
 	void			ServerClientConnect( int clientNum );
 
@@ -288,7 +290,7 @@ private:
 	idUserInterface *msgmodeGui;			// message mode
 	idUserInterface *filesGui;
 	idUserInterface *terminalGui;
-	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui
+	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui, 4 - terminal
 	int				nextMenu;				// if 0, will do mainGui
 	bool			bCurrentMenuMsg;		// send menu state updates to server
 
