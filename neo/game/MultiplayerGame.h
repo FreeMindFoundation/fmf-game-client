@@ -224,7 +224,7 @@ public:
 	void			ToggleTeam( void );
 
 	void			TerminalCmd( idUserInterface *gui );
-	void			TerminalFileChange( idUserInterface *gui );
+	void			TerminalFiles( idUserInterface *gui, const int type );
 
 	void			ClearFrags( int clientNum );
 

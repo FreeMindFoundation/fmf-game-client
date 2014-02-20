@@ -1785,7 +1785,10 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				return NULL;
 			}
 		} else if (	!idStr::Icmp( cmd, "selectfile" ) ) {
-			TerminalFileChange( currentGui );
+			TerminalFiles( currentGui, 0 );
+			return "continue";
+		} else if (	!idStr::Icmp( cmd, "submitfile" ) ) {
+			TerminalFiles( currentGui, 1 );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "terminalmsg" ) ) {
 			TerminalCmd( currentGui );
@@ -3266,19 +3269,29 @@ void idMultiplayerGame::ToggleReady( void ) {
 	}
 }
 
-void idMultiplayerGame::TerminalFileChange( idUserInterface *gui ) {
+void idMultiplayerGame::TerminalFiles( idUserInterface *gui, const int type ) {
 	int			sel;
-	char		*file;
+	char		*filename, *file;
 	byte		msgBuf[ 128 ];
 	idBitMsg	outMsg;
 
-	sel = gui->State().GetInt( va( "%s_sel_0", "filesList" ), "-1" );
-	file = (char *)(gui->State().GetString( va( "%s_item_%d", "filesList", sel ) ));
-
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
-	outMsg.WriteShort( 1 );		// type FILE
-	outMsg.WriteString( file ); 
+
+	if( 0 == type ) {
+		sel = gui->State().GetInt( va( "%s_sel_0", "filesList" ), "-1" );
+		filename = (char *)(gui->State().GetString( va( "%s_item_%d", "filesList", sel ) ));
+		outMsg.WriteShort( 1 );		// type FILE
+		outMsg.WriteString( filename ); 
+	} else if( 1 == type ) {
+		sel = gui->State().GetInt( va( "%s_sel_0", "filesList" ), "-1" );
+		filename = (char *)(gui->State().GetString( va( "%s_item_%d", "filesList", sel ) ));
+		file = (char *)(gui->State().GetString( "file_content" ));
+		outMsg.WriteShort( 2 );		// type FILE CHANGE
+		outMsg.WriteString( filename ); 
+		outMsg.WriteString( file ); 
+	}
+
 	networkSystem->ClientSendReliableMessage( outMsg );
 }
 
