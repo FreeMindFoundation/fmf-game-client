@@ -960,6 +960,96 @@ void idAI::InitMuzzleFlash( void ) {
 	worldMuzzleFlashHandle = -1;
 }
 
+void idAI::ReadFromSnapshot( const idBitMsgDelta &msg ) {
+	int oldHealth;
+	char buffer[ 256 ];
+	oldHealth = health;
+	
+	physicsObj.ReadFromSnapshot( msg );
+	ReadBindFromSnapshot( msg );
+	deltaViewAngles[0] = msg.ReadDeltaFloat( 0.0f );
+	deltaViewAngles[1] = msg.ReadDeltaFloat( 0.0f );
+	deltaViewAngles[2] = msg.ReadDeltaFloat( 0.0f );
+	health =  msg.ReadShort();
+		
+        // idMoveState
+        move.moveType = (moveType_t)msg.ReadLong();
+        move.moveCommand = (moveCommand_t)msg.ReadLong();
+        move.moveStatus = (moveStatus_t)msg.ReadLong();
+        move.moveDest[0] = msg.ReadFloat();
+		move.moveDest[1] = msg.ReadFloat();
+		move.moveDest[2] = msg.ReadFloat();
+        move.moveDir[0] = msg.ReadFloat();
+		move.moveDir[1] = msg.ReadFloat();
+		move.moveDir[2] = msg.ReadFloat();
+		move.goalEntityOrigin[0] = msg.ReadFloat();
+		move.goalEntityOrigin[1] = msg.ReadFloat();
+		move.goalEntityOrigin[2] = msg.ReadFloat();
+
+        move.toAreaNum = msg.ReadLong(  );
+        move.startTime = msg.ReadLong(  );
+        move.duration = msg.ReadLong(  );
+
+        move.speed = msg.ReadFloat();
+        move.range = msg.ReadFloat();
+        move.wanderYaw = msg.ReadFloat();
+
+        move.nextWanderTime = msg.ReadLong();
+        move.blockTime = msg.ReadLong();
+		
+        move.lastMoveOrigin[0] = msg.ReadFloat();
+		move.lastMoveOrigin[1] = msg.ReadFloat();
+		move.lastMoveOrigin[2] = msg.ReadFloat();
+
+		move.lastMoveTime = msg.ReadLong();
+        move.anim = msg.ReadLong();
+		
+		// idAI
+        travelFlags = msg.ReadLong();
+
+        kickForce = msg.ReadFloat(  );
+        ignore_obstacles = msg.ReadLong();
+        blockedRadius = msg.ReadFloat( );
+        blockedMoveTime = msg.ReadLong(  );
+        blockedAttackTime = msg.ReadLong(  );
+
+        ideal_yaw  = msg.ReadFloat( );
+        current_yaw  = msg.ReadFloat( );
+        turnRate  = msg.ReadFloat( );
+        turnVel  = msg.ReadFloat( );
+        anim_turn_yaw  = msg.ReadFloat( );
+        anim_turn_amount  = msg.ReadFloat( );
+        anim_turn_angles  = msg.ReadFloat( );
+
+        // ...
+
+        allowMove = msg.ReadLong(  );
+        allowHiddenMovement  = msg.ReadLong( );
+        disableGravity  = msg.ReadLong( );
+		
+        lastHitCheckResult = msg.ReadLong(  );
+        lastHitCheckTime  = msg.ReadLong( );
+        lastAttackTime  = msg.ReadLong( );
+
+        melee_range  = msg.ReadFloat( );
+        projectile_height_to_distance_ratio = msg.ReadFloat(  );
+
+        num_cinematics = msg.ReadLong(  );
+        current_cinematic = msg.ReadLong( );
+
+		entityNumber  =msg.ReadLong( );
+        entityDefNumber =msg.ReadLong(  );
+        snapshotSequence  =msg.ReadLong( );
+        snapshotBits =msg.ReadLong( );
+        thinkFlags = msg.ReadLong( );
+        cinematic  =msg.ReadLong( );
+	
+		msg.ReadString( buffer, sizeof( buffer ) );
+		attack = buffer;
+
+		Think();
+}
+
 /*
 ===================
 idAI::List_f
@@ -1046,10 +1136,11 @@ idAI::Think
 */
 void idAI::Think( void ) {
 	// if we are completely closed off from the player, don't do anything at all
+	/*
 	if ( CheckDormant() ) {
 		return;
 	}
-
+	*/
 	if ( thinkFlags & TH_THINK ) {
 		// clear out the enemy when he dies or is hidden
 		idActor *enemyEnt = enemy.GetEntity();

@@ -273,6 +273,7 @@ public:
 							// Finds the best collision free trajectory for a clip model.
 	static bool				PredictTrajectory( const idVec3 &firePos, const idVec3 &target, float projectileSpeed, const idVec3 &projGravity, const idClipModel *clip, int clipmask, float max_height, const idEntity *ignore, const idEntity *targetEntity, int drawtime, idVec3 &aimDir );
 
+	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 public:
 	// navigation
 	idAAS *					aas;

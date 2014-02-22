@@ -1076,7 +1076,7 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 		// add the entity to the snapshot list
 		ent->snapshotNode.AddToEnd( snapshotEntities );
 		ent->snapshotSequence = sequence;
-
+		
 		// read the class specific data from the snapshot
 		ent->ReadFromSnapshot( deltaMsg );
 

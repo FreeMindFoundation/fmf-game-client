@@ -205,6 +205,7 @@ public:
 	bool					AnimDone( int channel, int blendFrames ) const;
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
+	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg ) {};
 protected:
 	friend class			idAnimState;
 
