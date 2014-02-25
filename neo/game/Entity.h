@@ -503,6 +503,7 @@ public:
 	virtual bool			ClientReceiveEvent( int event, int time, const idBitMsg &msg );
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg ) {};
 
+
 	enum {
 		EVENT_ADD_DAMAGE_EFFECT = idEntity::EVENT_MAXEVENTS,
 		EVENT_MAXEVENTS

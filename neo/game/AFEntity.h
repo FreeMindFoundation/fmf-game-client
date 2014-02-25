@@ -189,6 +189,7 @@ public:
 	static void				DropAFs( idEntity *ent, const char *type, idList<idEntity *> *list );
 
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg ) {};
+	virtual void			ClientPredictionThink( void ) {};
 protected:
 	idAF					af;				// articulated figure
 	idClipModel *			combatModel;	// render model for hit detection
@@ -226,6 +227,7 @@ public:
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg ) {};
+	virtual void			ClientPredictionThink( void ) {};
 protected:
 	idRenderModel *			skeletonModel;
 	int						skeletonModelDefHandle;

@@ -284,7 +284,7 @@ idAI::idAI
 idAI::idAI() {
 	aas					= NULL;
 	travelFlags			= TFL_WALK|TFL_AIR;
-
+		
 	kickForce			= 2048.0f;
 	ignore_obstacles	= false;
 	blockedRadius		= 0.0f;
@@ -966,88 +966,164 @@ void idAI::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	oldHealth = health;
 	
 	physicsObj.ReadFromSnapshot( msg );
-	ReadBindFromSnapshot( msg );
-	deltaViewAngles[0] = msg.ReadDeltaFloat( 0.0f );
-	deltaViewAngles[1] = msg.ReadDeltaFloat( 0.0f );
-	deltaViewAngles[2] = msg.ReadDeltaFloat( 0.0f );
-	health =  msg.ReadShort();
-		
-        // idMoveState
-        move.moveType = (moveType_t)msg.ReadLong();
-        move.moveCommand = (moveCommand_t)msg.ReadLong();
-        move.moveStatus = (moveStatus_t)msg.ReadLong();
-        move.moveDest[0] = msg.ReadFloat();
-		move.moveDest[1] = msg.ReadFloat();
-		move.moveDest[2] = msg.ReadFloat();
-        move.moveDir[0] = msg.ReadFloat();
-		move.moveDir[1] = msg.ReadFloat();
-		move.moveDir[2] = msg.ReadFloat();
-		move.goalEntityOrigin[0] = msg.ReadFloat();
-		move.goalEntityOrigin[1] = msg.ReadFloat();
-		move.goalEntityOrigin[2] = msg.ReadFloat();
-
-        move.toAreaNum = msg.ReadLong(  );
-        move.startTime = msg.ReadLong(  );
-        move.duration = msg.ReadLong(  );
-
-        move.speed = msg.ReadFloat();
-        move.range = msg.ReadFloat();
-        move.wanderYaw = msg.ReadFloat();
-
-        move.nextWanderTime = msg.ReadLong();
-        move.blockTime = msg.ReadLong();
-		
-        move.lastMoveOrigin[0] = msg.ReadFloat();
-		move.lastMoveOrigin[1] = msg.ReadFloat();
-		move.lastMoveOrigin[2] = msg.ReadFloat();
-
-		move.lastMoveTime = msg.ReadLong();
-        move.anim = msg.ReadLong();
-		
-		// idAI
-        travelFlags = msg.ReadLong();
-
-        kickForce = msg.ReadFloat(  );
-        ignore_obstacles = msg.ReadLong();
-        blockedRadius = msg.ReadFloat( );
-        blockedMoveTime = msg.ReadLong(  );
-        blockedAttackTime = msg.ReadLong(  );
-
-        ideal_yaw  = msg.ReadFloat( );
-        current_yaw  = msg.ReadFloat( );
-        turnRate  = msg.ReadFloat( );
-        turnVel  = msg.ReadFloat( );
-        anim_turn_yaw  = msg.ReadFloat( );
-        anim_turn_amount  = msg.ReadFloat( );
-        anim_turn_angles  = msg.ReadFloat( );
-
-        // ...
-
-        allowMove = msg.ReadLong(  );
-        allowHiddenMovement  = msg.ReadLong( );
-        disableGravity  = msg.ReadLong( );
-		
-        lastHitCheckResult = msg.ReadLong(  );
-        lastHitCheckTime  = msg.ReadLong( );
-        lastAttackTime  = msg.ReadLong( );
-
-        melee_range  = msg.ReadFloat( );
-        projectile_height_to_distance_ratio = msg.ReadFloat(  );
-
-        num_cinematics = msg.ReadLong(  );
-        current_cinematic = msg.ReadLong( );
-
-		entityNumber  =msg.ReadLong( );
-        entityDefNumber =msg.ReadLong(  );
-        snapshotSequence  =msg.ReadLong( );
-        snapshotBits =msg.ReadLong( );
-        thinkFlags = msg.ReadLong( );
-        cinematic  =msg.ReadLong( );
 	
-		msg.ReadString( buffer, sizeof( buffer ) );
-		attack = buffer;
+	//ReadBindFromSnapshot( msg );
+    // idMoveState
+    move.moveType = (moveType_t)msg.ReadLong();
+    move.moveCommand = (moveCommand_t)msg.ReadLong();
+    move.moveStatus = (moveStatus_t)msg.ReadLong();
+    move.moveDest[0] = msg.ReadFloat();
+	move.moveDest[1] = msg.ReadFloat();
+	move.moveDest[2] = msg.ReadFloat();
+    move.moveDir[0] = msg.ReadFloat();
+	move.moveDir[1] = msg.ReadFloat();
+	move.moveDir[2] = msg.ReadFloat();
+	move.goalEntityOrigin[0] = msg.ReadFloat();
+	move.goalEntityOrigin[1] = msg.ReadFloat();
+	move.goalEntityOrigin[2] = msg.ReadFloat();
 
-		Think();
+    move.toAreaNum = msg.ReadLong(  );
+    move.startTime = msg.ReadLong(  );
+    move.duration = msg.ReadLong(  );
+
+    move.speed = msg.ReadFloat();
+    move.range = msg.ReadFloat();
+    move.wanderYaw = msg.ReadFloat();
+
+    move.nextWanderTime = msg.ReadLong();
+    move.blockTime = msg.ReadLong();
+		
+    move.lastMoveOrigin[0] = msg.ReadFloat();
+	move.lastMoveOrigin[1] = msg.ReadFloat();
+	move.lastMoveOrigin[2] = msg.ReadFloat();
+
+	move.lastMoveTime = msg.ReadLong();
+    move.anim = msg.ReadLong();
+		
+	// idAI
+    travelFlags = msg.ReadLong();
+    kickForce = msg.ReadFloat(  );
+    ignore_obstacles = msg.ReadByte();
+    blockedRadius = msg.ReadFloat( );
+    blockedMoveTime = msg.ReadLong(  );
+    blockedAttackTime = msg.ReadLong(  );
+
+    ideal_yaw  = msg.ReadFloat( );
+    current_yaw  = msg.ReadFloat( );
+    turnRate  = msg.ReadFloat( );
+    turnVel  = msg.ReadFloat( );
+    anim_turn_yaw  = msg.ReadFloat( );
+    anim_turn_amount  = msg.ReadFloat( );
+    anim_turn_angles  = msg.ReadFloat( );
+
+    // ...
+
+    allowMove = msg.ReadLong(  );
+    allowHiddenMovement  = msg.ReadLong( );
+    disableGravity  = msg.ReadLong( );
+		
+	af_push_moveables  = msg.ReadByte();
+
+    lastHitCheckResult = msg.ReadByte(  );
+    lastHitCheckTime  = msg.ReadLong( );
+    lastAttackTime  = msg.ReadLong( );
+
+    melee_range  = msg.ReadFloat( );
+    projectile_height_to_distance_ratio = msg.ReadFloat(  );
+
+    num_cinematics = msg.ReadLong(  );
+    current_cinematic = msg.ReadLong( );
+
+    allowJointMod= msg.ReadByte(  );
+    currentFocusPos[0]= msg.ReadFloat(  );
+    currentFocusPos[1]= msg.ReadFloat(  );
+    currentFocusPos[2]= msg.ReadFloat(  );
+    focusTime= msg.ReadLong(  );
+    alignHeadTime = msg.ReadLong( );
+    forceAlignHeadTime = msg.ReadLong( );
+
+    shrivel_rate = msg.ReadFloat( );
+    shrivel_start = msg.ReadLong(  );
+    restartParticles = msg.ReadByte(  );
+    useBoneAxis= msg.ReadByte(  );
+
+    worldMuzzleFlashHandle = msg.ReadLong( );
+    muzzleFlashEnd= msg.ReadLong(  );
+    flashTime = msg.ReadLong( );
+
+
+	// idActor
+    team = msg.ReadLong( );
+    rank = msg.ReadLong( );
+    fovDot = msg.ReadFloat( );
+    modelOffset[0] = msg.ReadFloat( );
+    modelOffset[1] = msg.ReadFloat( );
+    modelOffset[2] = msg.ReadFloat( );
+    deltaViewAngles[0] = msg.ReadFloat( );
+    deltaViewAngles[1] = msg.ReadFloat( );
+    deltaViewAngles[2] = msg.ReadFloat( );
+    pain_debounce_time = msg.ReadLong( );
+    pain_delay = msg.ReadLong(  );
+    pain_threshold = msg.ReadLong( );
+    // maybe add more here
+    allowPain= msg.ReadByte( );
+    allowEyeFocus = msg.ReadByte();
+    finalBoss = msg.ReadByte( );
+    painTime  = msg.ReadLong( );
+
+     // idAFEntity
+	combatModelContents = msg.ReadLong();
+	nextSoundTime = msg.ReadLong();
+
+	// script vars	
+	AI_TALK = (msg.ReadByte() == 1) ? true : false;  
+	AI_DAMAGE = (msg.ReadByte() == 1) ? true : false;
+	AI_PAIN = (msg.ReadByte() == 1) ? true : false;
+	AI_DEAD = (msg.ReadByte() == 1) ? true : false;
+	AI_ENEMY_VISIBLE = (msg.ReadByte() == 1) ? true : false;
+	AI_ENEMY_IN_FOV = (msg.ReadByte() == 1) ? true : false;
+	AI_ENEMY_DEAD = (msg.ReadByte() == 1) ? true : false;
+	AI_MOVE_DONE = (msg.ReadByte() == 1) ? true : false; 
+	AI_ONGROUND = (msg.ReadByte() == 1) ? true : false; 
+	AI_ACTIVATED = (msg.ReadByte() == 1) ? true : false;
+	AI_FORWARD = (msg.ReadByte() == 1) ? true : false;
+	AI_JUMP = (msg.ReadByte() == 1) ? true : false;
+	//AI_ENEMY_REACHABLE = (msg.ReadByte() == 1) ? true : false; 
+	AI_BLOCKED = (msg.ReadByte() == 1) ? true : false;
+	AI_OBSTACLE_IN_PATH = (msg.ReadByte() == 1) ? true : false;
+	AI_DEST_UNREACHABLE = (msg.ReadByte() == 1) ? true : false;
+	AI_HIT_ENEMY= (msg.ReadByte() == 1) ? true : false;
+	AI_PUSHED= (msg.ReadByte() == 1) ? true : false;
+	AI_FLASHON= (msg.ReadByte() == 1) ? true : false;
+	//	AI_SPECIAL_DAMAGE = msg.ReadFloat();
+		
+	entityNumber  =msg.ReadLong( );
+    entityDefNumber =msg.ReadLong(  );
+    snapshotSequence  =msg.ReadLong( );
+    snapshotBits =msg.ReadLong( );
+    thinkFlags = msg.ReadLong( );
+    cinematic  =msg.ReadLong( );
+	health =  msg.ReadShort();
+
+    fl.notarget = msg.ReadByte();
+    fl.noknockback  = msg.ReadByte( );
+    fl.takedamage = msg.ReadByte( );
+    fl.hidden = msg.ReadByte( );
+    fl.bindOrientated  = msg.ReadByte( );
+    fl.solidForTeam = msg.ReadByte(  );
+    fl.forcePhysicsUpdate = msg.ReadByte(  );
+    fl.selected = msg.ReadByte( );
+    fl.neverDormant = msg.ReadByte( );
+    fl.isDormant = msg.ReadByte(  );
+    fl.hasAwakened = msg.ReadByte();
+    fl.networkSync = msg.ReadByte();
+    modelDefHandle = msg.ReadLong( );
+
+	Think();	
+
+	if ( msg.HasChanged() ) {
+		UpdateVisuals();
+	}
 }
 
 /*
@@ -1273,6 +1349,7 @@ void idAI::LinkScriptVariables( void ) {
 	AI_OBSTACLE_IN_PATH.LinkTo(	scriptObject, "AI_OBSTACLE_IN_PATH" );
 	AI_PUSHED.LinkTo(			scriptObject, "AI_PUSHED" );
 	AI_MOV_DIR.LinkTo(			scriptObject, "AI_MOV_DIR" );
+	AI_FLASHON.LinkTo(			scriptObject, "AI_FLASHON" );
 }
 
 /*
@@ -1378,6 +1455,60 @@ bool ValidForBounds( const idAASSettings *settings, const idBounds &bounds ) {
 	}
 	return true;
 }
+
+void idAI::ClientPredictionThink( void ) {
+	/*
+	renderEntity_t *headRenderEnt;
+
+	// clear the ik before we do anything else so the skeleton doesn't get updated twice
+	walkIK.ClearJointMods();
+
+	// service animations
+	if (!af.IsActive() ) {
+		UpdateAnimState();
+		CheckBlink();
+	}
+
+	// clear out our pain flag so we can tell if we recieve any damage between now and the next time we think
+	AI_PAIN = false;
+
+
+	if ( head.GetEntity() ) {
+		headRenderEnt = head.GetEntity()->GetRenderEntity();
+	} else {
+		headRenderEnt = NULL;
+	}
+
+	if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() ) {
+		renderEntity.suppressShadowInViewID	= 0;
+		if ( headRenderEnt ) {
+			headRenderEnt->suppressShadowInViewID = 0;
+		}
+	} else {
+		renderEntity.suppressShadowInViewID	= entityNumber+1;
+		if ( headRenderEnt ) {
+			headRenderEnt->suppressShadowInViewID = entityNumber+1;
+		}
+	}
+	// never cast shadows from our first-person muzzle flashes
+	renderEntity.suppressShadowInLightID = LIGHTID_VIEW_MUZZLE_FLASH + entityNumber;
+	if ( headRenderEnt ) {
+		headRenderEnt->suppressShadowInLightID = LIGHTID_VIEW_MUZZLE_FLASH + entityNumber;
+	}
+
+	if ( !gameLocal.inCinematic ) {
+		UpdateAnimation();
+	}
+
+	Present();
+
+	UpdateDamageEffects();
+
+	LinkCombat();
+	*/
+	Think();
+}
+
 
 /*
 =====================

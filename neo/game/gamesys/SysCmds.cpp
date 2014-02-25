@@ -95,7 +95,7 @@ void CMD_MoveSentry_f( const idCmdArgs &args ) {
 	idAI		*ai;
 
 	for( check = gameLocal.activeEntities.Next(); check != NULL; check = check->activeNode.Next() ) {
-		if( memcmp( check->GetName(), "comm1_sentry", 12 ) != 0 )
+		if( memcmp( check->GetName(), "idAI_comm1_sentry", 17 ) != 0 )
 			continue;
 
 		//args.Argv( 1 );

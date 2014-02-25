@@ -206,6 +206,7 @@ public:
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg ) {};
+	virtual void			ClientPredictionThink( void ) {};
 protected:
 	friend class			idAnimState;
 
