@@ -2464,14 +2464,17 @@ idAFEntity_ClawFourFingers::Spawn
 void idAFEntity_ClawFourFingers::Spawn( void ) {
 	int i;
 
-	LoadAF();
+	if( !LoadAF() ) {
+		common->Warning( "idAFEntity_ClawFourFingers::Spawn !LoadAF()\n" );
+	}
 
+	common->Warning( "idAFEntity_ClawFourFingers::Spawn OK\n" );
 	SetCombatModel();
 
 	af.GetPhysics()->LockWorldConstraints( true );
 	af.GetPhysics()->SetForcePushable( true );
 	SetPhysics( af.GetPhysics() );
-
+	
 	fl.takedamage = true;
 
 	for ( i = 0; i < 4; i++ ) {
@@ -2510,6 +2513,48 @@ void idAFEntity_ClawFourFingers::Event_StopFingers( void ) {
 	}
 }
 
+void idAFEntity_ClawFourFingers::ReadFromSnapshot( const idBitMsgDelta &msg ) {
+	int i;
+
+	af.GetPhysics()->ReadFromSnapshot( msg );
+	SetPhysics( af.GetPhysics() );
+	ReadBindFromSnapshot( msg );
+	ReadColorFromSnapshot( msg );
+
+	for ( i = 0; i < 4; i++ ) {
+		fingers[i]->SetSteerAngle( msg.ReadFloat() );
+	}		
+	
+	entityNumber = msg.ReadLong( );
+	entityDefNumber = msg.ReadLong(  );
+	snapshotSequence  = msg.ReadLong( );
+	snapshotBits  = msg.ReadLong( );
+	thinkFlags  = msg.ReadLong( );
+	cinematic = msg.ReadLong(  );
+	health  = msg.ReadShort( );
+	
+	// idAFEntity
+	combatModelContents = msg.ReadLong(  );
+	nextSoundTime  = msg.ReadLong( ); 
+	
+    fl.notarget = msg.ReadByte();
+    fl.noknockback  = msg.ReadByte( );
+    fl.takedamage = msg.ReadByte( );
+    fl.hidden = msg.ReadByte( );
+    fl.bindOrientated  = msg.ReadByte( );
+    fl.solidForTeam = msg.ReadByte(  );
+    fl.forcePhysicsUpdate = msg.ReadByte(  );
+    fl.selected = msg.ReadByte( );
+    fl.neverDormant = msg.ReadByte( );
+    fl.isDormant = msg.ReadByte(  );
+    fl.hasAwakened = msg.ReadByte();
+    fl.networkSync = msg.ReadByte();
+    modelDefHandle = msg.ReadLong( );
+
+	if ( msg.HasChanged() ) {
+		idAFEntity_Base::Think();
+	}
+}
 
 /*
 ===============================================================================

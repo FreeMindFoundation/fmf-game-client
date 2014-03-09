@@ -53,6 +53,7 @@ const idEventDef EV_Thread_GetTime( "getTime", NULL, 'f' );
 const idEventDef EV_Thread_KillThread( "killthread", "s" );
 const idEventDef EV_Thread_SetThreadName( "threadname", "s" );
 const idEventDef EV_Thread_GetEntity( "getEntity", "s", 'e' );
+const idEventDef EV_Thread_GetMoveable( "getMoveable", "v", 'e' );
 const idEventDef EV_Thread_Spawn( "spawn", "s", 'e' );
 const idEventDef EV_Thread_CopySpawnArgs( "copySpawnArgs", "e" );
 const idEventDef EV_Thread_SetSpawnArg( "setSpawnArg", "ss" );
@@ -131,6 +132,7 @@ CLASS_DECLARATION( idClass, idThread )
 	EVENT( EV_Thread_KillThread,			idThread::Event_KillThread )
 	EVENT( EV_Thread_SetThreadName,			idThread::Event_SetThreadName )
 	EVENT( EV_Thread_GetEntity,				idThread::Event_GetEntity )
+	EVENT( EV_Thread_GetMoveable,			idThread::Event_GetMoveable )
 	EVENT( EV_Thread_Spawn,					idThread::Event_Spawn )
 	EVENT( EV_Thread_CopySpawnArgs,			idThread::Event_CopySpawnArgs )
 	EVENT( EV_Thread_SetSpawnArg,			idThread::Event_SetSpawnArg )
@@ -1086,6 +1088,30 @@ idThread::Event_KillThread
 */
 void idThread::Event_KillThread( const char *name ) {
 	KillThread( name );
+}
+
+void idThread::Event_GetMoveable( idVec3 &origin ) {
+	idEntity *ent;
+	float t;
+
+	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
+		if( ent->IsBound() ) {
+			continue;
+		}
+
+		if( memcmp( ent->GetName(), "idExplodingBarrel", 17 ) ) {
+			continue;
+		}
+
+		t = origin.Distance( ent->GetPhysics()->GetOrigin() );
+		
+		if( t < 100.0f )  { 
+			ReturnEntity( ent );
+			return;
+		} 
+	}
+
+	ReturnEntity( NULL );
 }
 
 /*

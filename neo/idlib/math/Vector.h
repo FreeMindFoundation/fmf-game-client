@@ -355,6 +355,7 @@ public:
 	float			Length( void ) const;
 	float			LengthSqr( void ) const;
 	float			LengthFast( void ) const;
+	float			Distance( const idVec3 &a );
 	float			Normalize( void );				// returns length
 	float			NormalizeFast( void );			// returns length
 	idVec3 &		Truncate( float length );		// cap length
@@ -641,6 +642,15 @@ ID_INLINE float idVec3::LengthFast( void ) const {
 
 	sqrLength = x * x + y * y + z * z;
 	return sqrLength * idMath::RSqrt( sqrLength );
+}
+
+ID_INLINE float idVec3::Distance( const idVec3 &a ) {
+	idVec3 v;
+
+	v.x = a.x - x;
+	v.y = a.y - y;
+	v.z = a.z - z;
+	return idMath::Sqrt( v.x * v.x + v.y * v.y + v.z * v.z );
 }
 
 ID_INLINE float idVec3::Normalize( void ) {

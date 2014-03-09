@@ -280,7 +280,6 @@ void UpdateSurfaceDialog() {
 bool ByeByeSurfaceDialog();
 
 void DoSurface (void) {
-
 	g_bNewFace = ( g_PrefsDlg.m_bFace != FALSE );
 	g_bNewApplyHandling = ( g_PrefsDlg.m_bNewApplyHandling != FALSE );
 	g_bGatewayhack = ( g_PrefsDlg.m_bGatewayHack != FALSE );
@@ -300,7 +299,9 @@ void DoSurface (void) {
 		CRect rct;
 		LONG lSize = sizeof(rct);
 		if (LoadRegistryInfo("radiant_SurfaceWindow", &rct, &lSize))  {
-			g_dlgSurface.SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
+			// this doesn't ocassionaly display correctly
+			//g_dlgSurface.SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
+			g_dlgSurface.SetWindowPos( NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
 		}
 		g_dlgSurface.ShowWindow(SW_SHOW);
 		Sys_UpdateWindows(W_ALL);

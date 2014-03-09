@@ -468,6 +468,7 @@ public:
 	void					Save( idSaveGame *savefile ) const;
 	void					Restore( idRestoreGame *savefile );
 
+	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 private:
 	idAFConstraint_Hinge *	fingers[4];
 

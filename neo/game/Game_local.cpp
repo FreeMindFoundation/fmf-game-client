@@ -3075,7 +3075,7 @@ bool idGameLocal::SpawnEntityDef( const idDict &args, idEntity **ent, bool setDe
 		return true;
 	}
 
-	Warning( "%s doesn't include a spawnfunc or spawnclass%s.", classname, error.c_str() );
+	Warning( "%s doesn't include a spawnfunc or spawnclass[%s] error: %s.", classname, spawn, error.c_str() );
 	return false;
 }
 

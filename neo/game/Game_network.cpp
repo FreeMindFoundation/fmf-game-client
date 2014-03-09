@@ -969,6 +969,8 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 	int				numSourceAreas, sourceAreas[ idEntity::MAX_PVS_AREAS ];
 	idWeapon		*weap;
 
+	//common->Printf( "snapshot size: %d\n", msg.GetSize() );
+
 	if ( net_clientLagOMeter.GetBool() && renderSystem ) {
 		UpdateLagometer( aheadOfServer, dupeUsercmds );
 		if ( !renderSystem->UploadImage( LAGO_IMAGE, (byte *)lagometer, LAGO_IMG_WIDTH, LAGO_IMG_HEIGHT ) ) {
@@ -1011,6 +1013,8 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 	// read all entities from the snapshot
 	for ( i = msg.ReadBits( GENTITYNUM_BITS ); i != ENTITYNUM_NONE; i = msg.ReadBits( GENTITYNUM_BITS ) ) {
 
+		
+
 		base = clientEntityStates[clientNum][i];
 		if ( base ) {
 			base->state.BeginReading();
@@ -1030,6 +1034,8 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 		typeNum = deltaMsg.ReadBits( idClass::GetTypeNumBits() );
 		entityDefNumber = ClientRemapDecl( DECL_ENTITYDEF, deltaMsg.ReadBits( entityDefBits ) );
 
+		//common->Printf( "snapshot entity %d %d %d\n", i, spawnId, typeNum );
+
 		typeInfo = idClass::GetType( typeNum );
 		if ( !typeInfo ) {
 			Error( "Unknown type number %d for entity %d with class number %d", typeNum, i, entityDefNumber );
@@ -1039,7 +1045,6 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 
 		// if there is no entity or an entity of the wrong type
 		if ( !ent || ent->GetType()->typeNum != typeNum || ent->entityDefNumber != entityDefNumber || spawnId != spawnIds[ i ] ) {
-
 			if ( i < MAX_CLIENTS && ent ) {
 				// SPAWN_PLAYER should be taking care of spawning the entity with the right spawnId
 				common->Warning( "ClientReadSnapshot: recycling client entity %d\n", i );
@@ -1061,7 +1066,7 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 				args.Set( "classname", classname );
 				if ( !SpawnEntityDef( args, &ent ) || !entities[i] || entities[i]->GetType()->typeNum != typeNum ) {
 					Error( "Failed to spawn entity with classname '%s' of type '%s'", classname, typeInfo->classname );
-				}
+				} 
 			} else {
 				ent = SpawnEntityType( *typeInfo, &args, true );
 				if ( !entities[i] || entities[i]->GetType()->typeNum != typeNum ) {

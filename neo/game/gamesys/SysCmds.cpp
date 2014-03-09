@@ -95,7 +95,7 @@ void CMD_MoveSentry_f( const idCmdArgs &args ) {
 	idAI		*ai;
 
 	for( check = gameLocal.activeEntities.Next(); check != NULL; check = check->activeNode.Next() ) {
-		if( memcmp( check->GetName(), "idAI_comm1_sentry", 17 ) != 0 )
+		if( memcmp( check->GetName(), "comm1_sentry", 12 ) != 0 )
 			continue;
 
 		//args.Argv( 1 );
@@ -2363,7 +2363,7 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "game_memory",			idClass::DisplayInfo_f,		CMD_FL_GAME,				"displays game class info" );
 	cmdSystem->AddCommand( "listClasses",			idClass::ListClasses_f,		CMD_FL_GAME,				"lists game classes" );
 	cmdSystem->AddCommand( "listThreads",			idThread::ListThreads_f,	CMD_FL_GAME|CMD_FL_CHEAT,	"lists script threads" );
-	cmdSystem->AddCommand( "listEntities",			Cmd_EntityList_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"lists game entities" );
+	cmdSystem->AddCommand( "listEntities",			Cmd_EntityList_f,			CMD_FL_GAME,	"lists game entities" );
 	cmdSystem->AddCommand( "listActiveEntities",	Cmd_ActiveEntityList_f,		CMD_FL_GAME,	"lists active game entities" );
 	cmdSystem->AddCommand( "ms",					CMD_MoveSentry_f,				CMD_FL_GAME,	"move sentry" );
 	cmdSystem->AddCommand( "listMonsters",			idAI::List_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"lists monsters" );

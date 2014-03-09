@@ -966,7 +966,6 @@ void idAI::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	oldHealth = health;
 	
 	physicsObj.ReadFromSnapshot( msg );
-	
 	//ReadBindFromSnapshot( msg );
     // idMoveState
     move.moveType = (moveType_t)msg.ReadLong();
@@ -1095,6 +1094,7 @@ void idAI::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	AI_HIT_ENEMY= (msg.ReadByte() == 1) ? true : false;
 	AI_PUSHED= (msg.ReadByte() == 1) ? true : false;
 	AI_FLASHON= (msg.ReadByte() == 1) ? true : false;
+	AI_MOV_DIR= (msg.ReadByte() == 1) ? true : false;
 	//	AI_SPECIAL_DAMAGE = msg.ReadFloat();
 		
 	entityNumber  =msg.ReadLong( );
