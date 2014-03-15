@@ -70,12 +70,15 @@ const idEventDef EV_Thread_AngToRight( "angToRight", "v", 'v' );
 const idEventDef EV_Thread_AngToUp( "angToUp", "v", 'v' );
 const idEventDef EV_Thread_Sine( "sin", "f", 'f' );
 const idEventDef EV_Thread_Cosine( "cos", "f", 'f' );
+const idEventDef EV_Thread_AcosineDeg( "acosdeg", "f", 'f' );
+const idEventDef EV_Thread_Atan2Deg( "atan2deg", "ff", 'f' );
 const idEventDef EV_Thread_SquareRoot( "sqrt", "f", 'f' );
 const idEventDef EV_Thread_Normalize( "vecNormalize", "v", 'v' );
 const idEventDef EV_Thread_VecLength( "vecLength", "v", 'f' );
 const idEventDef EV_Thread_VecDotProduct( "DotProduct", "vv", 'f' );
 const idEventDef EV_Thread_VecCrossProduct( "CrossProduct", "vv", 'v' );
 const idEventDef EV_Thread_VecToAngles( "VecToAngles", "v", 'v' );
+const idEventDef EV_Thread_Vec3Angle( "Vec3Angle", "vv", 'f' );
 const idEventDef EV_Thread_OnSignal( "onSignal", "des" );
 const idEventDef EV_Thread_ClearSignal( "clearSignalThread", "de" );
 const idEventDef EV_Thread_SetCamera( "setCamera", "e" );
@@ -149,12 +152,15 @@ CLASS_DECLARATION( idClass, idThread )
 	EVENT( EV_Thread_AngToUp,				idThread::Event_AngToUp )
 	EVENT( EV_Thread_Sine,					idThread::Event_GetSine )
 	EVENT( EV_Thread_Cosine,				idThread::Event_GetCosine )
+	EVENT( EV_Thread_AcosineDeg,			idThread::Event_GetAcosineDeg )
+	EVENT( EV_Thread_Atan2Deg,				idThread::Event_GetAtan2Deg )
 	EVENT( EV_Thread_SquareRoot,			idThread::Event_GetSquareRoot )
 	EVENT( EV_Thread_Normalize,				idThread::Event_VecNormalize )
 	EVENT( EV_Thread_VecLength,				idThread::Event_VecLength )
 	EVENT( EV_Thread_VecDotProduct,			idThread::Event_VecDotProduct )
 	EVENT( EV_Thread_VecCrossProduct,		idThread::Event_VecCrossProduct )
 	EVENT( EV_Thread_VecToAngles,			idThread::Event_VecToAngles )
+	EVENT( EV_Thread_Vec3Angle,				idThread::Event_Vec3Angle )
 	EVENT( EV_Thread_OnSignal,				idThread::Event_OnSignal )
 	EVENT( EV_Thread_ClearSignal,			idThread::Event_ClearSignalThread )
 	EVENT( EV_Thread_SetCamera,				idThread::Event_SetCamera )
@@ -1311,6 +1317,14 @@ void idThread::Event_GetCosine( float angle ) {
 	ReturnFloat( idMath::Cos( DEG2RAD( angle ) ) );
 }
 
+void idThread::Event_GetAcosineDeg( float a ) {
+	ReturnFloat( RAD2DEG( idMath::ACos( a ) ) );
+}
+
+void idThread::Event_GetAtan2Deg( float a, float b ) {
+	ReturnFloat( RAD2DEG( atan2( a, b ) ) );
+}
+
 /*
 ================
 idThread::Event_GetSquareRoot
@@ -1368,6 +1382,12 @@ idThread::Event_VecToAngles
 void idThread::Event_VecToAngles( idVec3 &vec ) {
 	idAngles ang = vec.ToAngles();
 	ReturnVector( idVec3( ang[0], ang[1], ang[2] ) );
+}
+
+void idThread::Event_Vec3Angle( idVec3 &a, idVec3 &b ) {	
+	//atan2(norm(cross(a,b)), dot(a,b));
+	//2 * atan(norm(x*norm(y) - norm(x)*y) / norm(x * norm(y) + norm(x) * y))
+	ReturnFloat( RAD2DEG( atan2( (a.Cross( b )).Normalize(), DotProduct(a, b) ) ) );	
 }
 
 /*

@@ -1,0 +1,65 @@
+#include "script/map_test2_crane.script"
+#include "script/map_test2_airlock.script"
+#include "script/map_test2_solarpanel.script"
+
+namespace map_test2 {
+
+	void solar_source() {
+		while( 1 ) {	
+		/*
+			$solar_holder.move( DOWN, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( UP, 300 );
+			sys.waitFor( $solar_holder );			
+		
+			$solar_holder.move( WEST, 300 );
+			sys.waitFor( $solar_holder );	
+			
+			$solar_holder.move( DOWN, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( UP, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( EAST, 300 );
+			sys.waitFor( $solar_holder );	
+		*/
+		
+			$solar_holder.move( SOUTH, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( WEST, 300 );
+			sys.waitFor( $solar_holder );			
+			
+			$solar_holder.move( DOWN, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( UP, 300 );
+			sys.waitFor( $solar_holder );	
+			
+			$solar_holder.move( NORTH, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( EAST, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( DOWN, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( UP, 300 );
+			sys.waitFor( $solar_holder );	
+		}
+	}
+	
+	void main() {
+		setup_objects();
+		init_crane();
+	
+		thread solar_source();
+		
+		thread move_holder();
+
+		thread airlock2_door2_open();
+	}
+}

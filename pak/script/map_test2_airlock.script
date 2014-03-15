@@ -1,0 +1,378 @@
+namespace map_test2 {
+
+	////////////////////////////////////////////////////
+	//
+	//	Setup binds and times etc...
+	//
+	////////////////////////////////////////////////////
+	void setup_objects()
+	{
+
+		$airlock2_door1_gui.setGuiParm ( "gui_parm1" , 1);
+		$airlock2_door2_gui.setGuiParm ( "gui_parm1" , 1);
+
+		//airlock2 times
+		$airlock2_door1_left.time (1.2);
+		$airlock2_door1_right.time (1.2);
+		$airlock2_door1_left.accelTime (.2);
+		$airlock2_door1_left.decelTime (1);
+		$airlock2_door1_right.accelTime (.2);
+		$airlock2_door1_right.decelTime (1);
+
+		$airlock2_door1_top_lock.time (.25);
+		$airlock2_door1_bottom_lock.time (.25);
+		
+		$airlock2_door1_left_lock.time (.75);
+		$airlock2_door1_right_lock.time (.75);
+		$airlock2_door1_left_lock.accelTime (.1);
+		$airlock2_door1_left_lock.decelTime (.65);
+		$airlock2_door1_right_lock.accelTime (.1);
+		$airlock2_door1_right_lock.decelTime (.65);
+
+		$airlock2_door2_left.time (1.2);
+		$airlock2_door2_right.time (1.2);
+		$airlock2_door2_left.accelTime (.2);
+		$airlock2_door2_left.decelTime (1);
+		$airlock2_door2_right.accelTime (.2);
+		$airlock2_door2_right.decelTime (1);
+
+		$airlock2_door2_top_lock.time (.25);
+		$airlock2_door2_bottom_lock.time (.25);
+		
+		$airlock2_door2_left_lock.time (.75);
+		$airlock2_door2_right_lock.time (.75);
+		$airlock2_door2_left_lock.accelTime (.1);
+		$airlock2_door2_left_lock.decelTime (.65);
+		$airlock2_door2_right_lock.accelTime (.1);
+		$airlock2_door2_right_lock.decelTime (.65);
+
+	}
+
+	void entMove( entity ent, float dir, float val ) {
+		ent.move ( dir, val );
+	}
+	
+	void entRot( entity ent, vector v ) {
+		ent.rotateOnce( v );
+	}
+
+	
+	void airlock_door_open( float airlock, float doornum )
+	{
+		entity ent;
+		entity entdoorr, entdoorl;
+		entity speaker;
+		string door1;
+		string door2;
+		float  portalstate;
+		float  movedist;
+
+		if ( doornum == 2 ) {
+			door1 = "airlock" + airlock + "_door2";
+			door2 = "airlock" + airlock + "_door1";
+			portalstate = 2;
+			movedist = -16;
+		} else {
+			door1 = "airlock" + airlock + "_door1";
+			door2 = "airlock" + airlock + "_door2";
+			portalstate = 1;
+			movedist = 16;
+		}
+
+		//turn door1 light on and door2 light off
+		ent=sys.getEntity ( door2 + "_light" );
+		thread crossFadeEnt (ent, '.84 .84 .9', '0.37 0.05 0.01', 1);
+		
+		sys.wait(1);
+
+		ent=sys.getEntity ( door1 + "_light" );
+		thread crossFadeEnt (ent, '0.37 0.05 0.01', '.84 .84 .9', 1);
+
+		//move the 4 locks to unlock position
+		ent=sys.getEntity ( door1 + "_top_lock" );
+		ent.time (0.25);
+		ent.move ( UP, 15 );
+
+		speaker=sys.getEntity ("speaker_" + door1 + "_bottom_lock" );
+		sys.trigger (speaker);
+ 
+		ent=sys.getEntity ( door1 + "_bottom_lock" );
+		ent.time (0.25);
+		ent.move ( DOWN, 15 );
+
+		sys.waitFor (ent);
+
+		speaker=sys.getEntity ("speaker_" + door1 + "_left_lock" );
+		sys.trigger (speaker);
+
+		ent=sys.getEntity ( door1 + "_left_lock" );
+		ent.time (0.75);
+		ent.move ( EAST, movedist );
+
+		speaker=sys.getEntity ("speaker_" + door1 + "_right_lock" );
+		sys.trigger (speaker);
+
+		ent=sys.getEntity ( door1 + "_right_lock" );
+		ent.time (0.75);
+		ent.move ( EAST, movedist );
+
+		sys.waitFor (ent);
+
+		//open doors
+		speaker=sys.getEntity ( "speaker_" + door1 + "_open");
+		sys.trigger (speaker);
+
+		entdoorl=sys.getEntity ( door1 + "_left" );
+		entdoorl.time (1.2);
+		entdoorl.rotateOnce ( '0 45 0' );
+
+		entdoorr=sys.getEntity ( door1 + "_right" );
+		entdoorr.time (1.2);
+		entdoorr.rotateOnce ( '0 -45 0' );
+
+		//trigger the portal
+		ent=sys.getEntity (door1 + "_portal" );
+		sys.trigger (ent);
+
+		sys.waitFor (entdoorr);
+		sys.waitFor (entdoorl);
+
+		//set airlock state
+		ent=sys.getEntity ("airlock" + airlock + "_door1_portal" );
+		ent.setKey ("state", portalstate );
+
+	}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	Close airlock door
+	//
+	////////////////////////////////////////////////////
+	void airlock_door_close(float airlock, float doornum )
+	{
+		entity ent;
+		entity entdoorr, entdoorl;
+		entity speaker;
+		string door;
+		float  movedist;
+
+		if ( doornum == 2 ) {
+			door = "airlock" + airlock + "_door2";
+			movedist = 16;
+		} else {
+			door = "airlock" + airlock + "_door1";
+			movedist = -16;
+		}
+
+		//close doors
+
+		speaker= sys.getEntity ("speaker_" + door + "_close");
+		sys.trigger (speaker);
+
+		entdoorl=sys.getEntity ( door + "_left" );
+		entdoorl.time (1.2);
+		entdoorl.rotateOnce ( '0 -45 0' );
+
+		entdoorr=sys.getEntity ( door + "_right" );
+		entdoorr.time (1.2);
+		entdoorr.rotateOnce ( '0 45 0' );
+
+		sys.waitFor (entdoorr);
+		sys.waitFor (entdoorl);
+
+		//trigger the portal
+		ent=sys.getEntity ( door + "_portal" );
+		sys.trigger (ent);
+
+		//move the 4 locks to unlock position
+		ent=sys.getEntity ( door + "_top_lock" );
+		ent.time (0.25);
+		ent.move ( DOWN, 15 );
+
+		speaker=sys.getEntity ("speaker_" + door + "_bottom_lock");
+		sys.trigger (speaker);
+
+		ent=sys.getEntity ( door + "_bottom_lock" );
+		ent.time (0.25);
+		ent.move ( UP, 15 );
+		
+		speaker=sys.getEntity ("speaker_" + door + "_left_lock" );
+		sys.trigger (speaker);
+
+		ent=sys.getEntity ( door + "_left_lock" );
+		ent.time (0.75);
+		ent.move ( EAST, movedist );
+
+		speaker=sys.getEntity ("speaker_" + door + "_right_lock" );
+		sys.trigger (speaker);
+
+		ent=sys.getEntity ( door + "_right_lock" );
+		ent.time (0.75);
+		ent.move ( EAST, movedist );
+
+		sys.waitFor (ent);
+
+}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	Main Activate airlock
+	//	conditionally chooses based on entrance
+	//
+	////////////////////////////////////////////////////
+	void airlock_main_activate(float airlock)
+	{
+		entity ent;
+
+		//check to see which way the palyer entered by checking the airlock_state
+		//if 1 then close 1 and open 2
+
+		ent=sys.getEntity ("airlock" + airlock + "_door1_portal" );
+			
+		if (ent.getFloatKey ("state")==1) {
+			thread airlock_door_close( airlock, 1 );
+			thread airlock_door_open( airlock, 2 );
+
+		} else { //else close 2 and open 1
+			thread airlock_door_close( airlock, 2 );
+			thread airlock_door_open( airlock, 1 );
+		}
+	}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	AIRLOCK main activation
+	//	
+	////////////////////////////////////////////////////
+	void airlock2_activate()
+	{
+		//disable the guis on the doors
+		$airlock2_door1_gui.setGuiParm ( "gui_parm1" , 0);
+		$airlock2_door2_gui.setGuiParm ( "gui_parm1" , 0);
+		$airlock2_innerguiholder.setGuiParm ( "gui_parm11" , 0);
+	
+		airlock_main_activate(2);
+
+		//check the airlock state and enable the guis on the closed door
+		if ($airlock2_door1_portal.getFloatKey ("state")==1) {
+			$airlock2_door2_gui.setGuiParm ( "gui_parm1" , 1);
+		} else { //else close 2 and open 1
+			$airlock2_door1_gui.setGuiParm ( "gui_parm1" , 1);
+		}
+
+		$airlock2_innerguiholder.setGuiParm ( "gui_parm11" , 1);
+	}
+	
+	void airlock3_activate()
+	{
+		//disable the guis on the doors
+		$airlock3_door1_gui.setGuiParm ( "gui_parm1" , 0);
+		$airlock3_door2_gui.setGuiParm ( "gui_parm1" , 0);
+		$airlock3_innerguiholder.setGuiParm ( "gui_parm11" , 0);
+	
+		airlock_main_activate(3);
+
+		//check the airlock state and enable the guis on the closed door
+		if ($airlock3_door1_portal.getFloatKey ("state")==1) {
+			$airlock3_door2_gui.setGuiParm ( "gui_parm1" , 1);
+		} else { //else close 2 and open 1
+			$airlock3_door1_gui.setGuiParm ( "gui_parm1" , 1);
+		}
+
+		$airlock3_innerguiholder.setGuiParm ( "gui_parm11" , 1);
+	}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	AIRLOCK doors opening
+	//	
+	////////////////////////////////////////////////////
+	void airlock2_door1_open()
+	{
+		thread airlock_door_open(2, 1);
+	}
+
+	void airlock2_door2_open()
+	{
+		thread airlock_door_open(2, 2);
+	}
+
+	void airlock3_door1_open()
+	{
+		thread airlock_door_open(3, 1);
+	}
+
+	void airlock3_door2_open()
+	{
+		thread airlock_door_open(3, 2);
+	}
+
+	void airlock4_door1_open()
+	{
+		$airlock4_door1_gui.setGuiParm ( "gui_parm1" , 0);
+		thread airlock_door_open(4, 1);
+	}
+
+	
+	//exits map
+	void airlock_exit()
+	{
+		sys.trigger ($end_level);
+
+		float thread1;
+
+		thread1 = thread airlock_door_close(4, 1);
+		sys.waitForThread( thread1 );
+
+		//turn doora light off
+		thread crossFadeEnt ($airlock4_door1_light, '.84 .84 .9', '0.37 0.05 0.01', 1);
+		sys.wait(1);
+
+		sys.trigger ($end_level);
+	}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	initial AIRLOCK doors opening
+	//	start of map
+	//	
+	////////////////////////////////////////////////////
+	void initial_airlock_open()
+	{
+		//turn door2 light on
+		thread crossFadeEnt ($airlock1_door2_light, '0.37 0.05 0.01', '.84 .84 .9', 1);
+
+		//move the 4 locks to unlock position
+		$airlock1_door2_top_lock.move ( UP, 15 );
+		$airlock1_door2_bottom_lock.move ( DOWN, 15 );
+		
+		sys.trigger ($speaker_airlock1_door2_bottom_lock);		// SOUND
+		
+		sys.waitFor ($airlock1_door2_bottom_lock);
+
+		sys.trigger ($speaker_airlock1_door2_left_lock);
+		$airlock1_door2_left_lock.move ( EAST, -16 );
+		
+		sys.trigger ($speaker_airlock1_door2_right_lock);
+		$airlock1_door2_right_lock.move ( EAST, -16 );
+		sys.waitFor ($airlock1_door2_right_lock);
+
+		//open doors
+		sys.trigger ($speaker_airlock1_door2_open);				// SOUND
+		
+		$airlock1_door2_left.rotateOnce ( '0 45 0' );
+		$airlock1_door2_right.rotateOnce ( '0 -45 0' );
+
+		//trigger the portal
+		sys.trigger ($airlock1_door2_portal);
+
+		sys.waitFor ($airlock1_door2_left);
+		sys.waitFor ($airlock1_door2_right);
+	}
+
+}

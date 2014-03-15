@@ -50,6 +50,8 @@ idSessionLocal::StartMainMenu
 ==============
 */
 void idSessionLocal::StartMenu( bool playIntro ) {
+
+	
 	if ( guiActive == guiMainMenu ) {
 		return;
 	}

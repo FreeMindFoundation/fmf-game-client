@@ -1,0 +1,176 @@
+namespace map_test2 {	
+	
+	float active_holder = 0;
+	float active_panel0 = 0;
+	float active_panel1 = 0;
+	float active_panel2 = 0;
+	float active_panel3 = 0;
+	
+	void set_code() {
+	}
+	
+	void func_holder() {
+		if( active_holder == 1 ) {
+			active_holder = 0;	
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Holder rotation terminated." );
+			$solar_panel_terminal.setGuiParm ( "gui_parm13" , "2" );
+		} else {
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Holder rotation initiated." );
+			$solar_panel_terminal.setGuiParm ( "gui_parm13" , "1" );
+			active_holder = 1;
+		}
+	}
+	
+	void func_p0() {
+		if( active_panel0 == 1 ) {
+			active_panel0 = 0;	
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 1 deactivated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm14" , "2" );
+		} else {
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 1 activated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm14" , "1" );
+			active_panel0 = 1;
+		}
+	}
+	
+	void func_p1() {
+		if( active_panel1 == 1 ) {
+			active_panel1 = 0;	
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 2 deactivated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm15" , "2" );
+		} else {
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 2 activated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm15" , "1" );
+			active_panel1 = 1;
+		}
+	}	
+	
+	void func_p2() {
+		if( active_panel2 == 1 ) {
+			active_panel2 = 0;	
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 3 deactivated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm16" , "2" );
+		} else {
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 3 activated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm16" , "1" );
+			active_panel2 = 1;
+		}
+	}
+	
+	void func_p3() {
+		if( active_panel3 == 1 ) {
+			active_panel3 = 0;	
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 4 deactivated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm17" , "2" );
+		} else {
+			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 4 activated" );
+			$solar_panel_terminal.setGuiParm ( "gui_parm17" , "1" );
+			active_panel3 = 1;
+		}
+	}	
+
+	void entRotate( entity ent, float axis, float pos, float down ) {
+		// $phold_hor, X_AXIS, vertical, 1
+		if( down == 1 ) {
+			ent.rotateDownTo( axis, pos );
+		} else {
+			ent.rotateUpTo( axis, pos );
+		}	
+	}
+	
+	void move_holder() {
+		vector l;
+		vector s;
+		float horizontal;
+		vector a;
+		vector b;
+		float tmp;
+	
+		float y;
+		float vertical;
+		
+		float h;
+		float v;
+	
+		s = $phold_ver.getWorldOrigin();
+		
+		// check for a status change
+		while( 1 ) {
+		
+			if( active_panel0 == 1 ) {
+				$light_p0_0.setColor(0, 1, 0);
+			} else {
+				$light_p0_0.setColor(1, 0, 0);
+			}
+			
+			if( active_panel1 == 1 ) {
+				$light_p0_1.setColor(0, 1, 0);
+			} else {
+				$light_p0_1.setColor(1, 0, 0);
+			}
+
+			if( active_panel2 == 1 ) {
+				$light_p0_2.setColor(0, 1, 0);
+			} else {
+				$light_p0_2.setColor(1, 0, 0);
+			}
+
+			if( active_panel3 == 1 ) {
+				$light_p0_3.setColor(0, 1, 0);
+			} else {
+				$light_p0_3.setColor(1, 0, 0);
+			}
+			
+		while( active_holder ) {			
+			l = $solar_holder.getWorldOrigin();
+			a = $phold_ver.getAngles();
+			b = $phold_hor.getAngles();
+			
+			horizontal = sys.atan2deg( l_y - s_y, l_x - s_x );
+
+			// FIXME: this looks inaccurate
+			//vertical = sys.atan2deg( l_z - s_z, l_x - s_x );
+			//vertical = sys.acosdeg( ( s_x * l_x + s_y * l_y + s_z * l_z ) / ( sys.sqrt( s_x*s_x + s_y*s_y + s_z*s_z ) * sys.sqrt( l_x*l_x + l_y*l_y + l_z*l_z ) ) );			
+			vertical = sys.Vec3Angle( s, l ) * 3.14;
+			
+			y = a_y;
+			
+			if( vertical < 90.0f ) {	
+				vertical = 90 - vertical;
+			} else {
+				vertical = vertical - 90;
+			}
+		
+			if( vertical > b_x ) {
+				$phold_hor.rotateUpTo( X_AXIS, vertical );	
+				h = thread entRotate( $phold_hor, X_AXIS, vertical, 0 );	
+			} else {
+				//$phold_hor.rotateDownTo( X_AXIS, vertical );
+				h = thread entRotate( $phold_hor, X_AXIS, vertical, 1 );				
+			}		
+			sys.waitForThread( h );	
+			
+			if( horizontal < 0 ) {
+				horizontal += 360;
+			}				
+			if( y < 0 ) {
+				y += 360;
+			}
+			
+			// FIXME: clockwise when > 360
+			if( horizontal > y || (y - horizontal) > 180 ) {
+				//v = thread entRotateUp( $phold_ver.rotateUpTo( Y_AXIS, horizontal );
+				v = thread entRotate( $phold_ver, Y_AXIS, horizontal, 0 );
+			} else {
+				//$phold_ver.rotateDownTo( Y_AXIS, horizontal );			
+				v = thread entRotate( $phold_ver, Y_AXIS, horizontal, 1 );
+			}
+			sys.waitForThread( v );
+					
+			sys.wait( .05 );		
+		}
+			sys.wait( 0.1 );
+		}
+	}
+
+}

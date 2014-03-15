@@ -2551,9 +2551,9 @@ void idAFEntity_ClawFourFingers::ReadFromSnapshot( const idBitMsgDelta &msg ) {
     fl.networkSync = msg.ReadByte();
     modelDefHandle = msg.ReadLong( );
 
-	if ( msg.HasChanged() ) {
-		idAFEntity_Base::Think();
-	}
+	//if ( msg.HasChanged() ) {
+	//}
+	idAFEntity_Base::Think();
 }
 
 /*
