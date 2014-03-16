@@ -437,6 +437,7 @@ private:
 	void					Event_GetMaxs( void );
 	void					Event_Touches( idEntity *ent );
 	void					Event_SetGuiParm( const char *key, const char *val );
+	void                    Event_GetGuiParm( const char *key );
 	void					Event_SetGuiFloat( const char *key, float f );
 	void					Event_GetNextKey( const char *prefix, const char *lastMatch );
 	void					Event_SetKey( const char *key, const char *value );

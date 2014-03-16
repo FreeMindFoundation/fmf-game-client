@@ -160,6 +160,9 @@
       <Command>cd $(SolutionDir)\..
 "build\Win32\$(Configuration)\TypeInfo.exe"</Command>
     </PreBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>_XKEYCHECK_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug with inlines|Win32'">
     <PreBuildEvent>

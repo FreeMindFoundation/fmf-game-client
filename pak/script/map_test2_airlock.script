@@ -48,15 +48,13 @@ namespace map_test2 {
 
 	}
 
-	void entMove( entity ent, float dir, float val ) {
-		ent.move ( dir, val );
-	}
-	
-	void entRot( entity ent, vector v ) {
-		ent.rotateOnce( v );
-	}
 
-	
+	////////////////////////////////////////////////////
+	//
+	//	Open airlock door
+	//
+	////////////////////////////////////////////////////
+
 	void airlock_door_open( float airlock, float doornum )
 	{
 		entity ent;
@@ -232,12 +230,12 @@ namespace map_test2 {
 		ent=sys.getEntity ("airlock" + airlock + "_door1_portal" );
 			
 		if (ent.getFloatKey ("state")==1) {
-			thread airlock_door_close( airlock, 1 );
-			thread airlock_door_open( airlock, 2 );
+			airlock_door_close( airlock, 1 );
+			airlock_door_open( airlock, 2 );
 
 		} else { //else close 2 and open 1
-			thread airlock_door_close( airlock, 2 );
-			thread airlock_door_open( airlock, 1 );
+			airlock_door_close( airlock, 2 );
+			airlock_door_open( airlock, 1 );
 		}
 	}
 
@@ -293,28 +291,28 @@ namespace map_test2 {
 	////////////////////////////////////////////////////
 	void airlock2_door1_open()
 	{
-		thread airlock_door_open(2, 1);
+		airlock_door_open(2, 1);
 	}
 
 	void airlock2_door2_open()
 	{
-		thread airlock_door_open(2, 2);
+		airlock_door_open(2, 2);
 	}
 
 	void airlock3_door1_open()
 	{
-		thread airlock_door_open(3, 1);
+		airlock_door_open(3, 1);
 	}
 
 	void airlock3_door2_open()
 	{
-		thread airlock_door_open(3, 2);
+		airlock_door_open(3, 2);
 	}
 
 	void airlock4_door1_open()
 	{
 		$airlock4_door1_gui.setGuiParm ( "gui_parm1" , 0);
-		thread airlock_door_open(4, 1);
+		airlock_door_open(4, 1);
 	}
 
 	

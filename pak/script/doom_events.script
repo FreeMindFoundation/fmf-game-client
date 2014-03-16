@@ -167,6 +167,8 @@ scriptEvent	void 	fadeSound( float channel, float newLevel, float fadeTime );
 // Sets a parameter on this entity's GUI.
 scriptEvent	void 	setGuiParm( string key, string value );
 
+scriptEvent	string 	getGuiParm( string key );
+
 // Sets a parameter on this entity's GUI.
 scriptEvent	void 	setGuiFloat( string key, float value );
 

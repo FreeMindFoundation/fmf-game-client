@@ -6,66 +6,102 @@ namespace map_test2 {
 	float active_panel2 = 0;
 	float active_panel3 = 0;
 	
+	string tmp0 = "0";
+	string tmp1 = "1";
+	string tmp2 = "2";
+
 	void set_code() {
+	}
+	
+	void test1() {
+		sys.print( "test1\n" );
+	}
+	
+	void test2() {
+		sys.print( "test2\n" );
+	}	
+
+	void new_pass() {
+		tmp0 = $solar_panel_terminal.getGuiParm( "gui_parm1" );
+		tmp1 = $solar_panel_terminal.getGuiParm( "gui_parm2" );
+		tmp2 = $solar_panel_terminal.getGuiParm( "gui_parm3" );	
+	}
+	
+	void verify_pass() {
+		/*
+		if( $solar_panel_terminal.getGuiParm( "gui_parm1" ) == tmp0 && $solar_panel_terminal.getGuiParm( "gui_parm2" ) == tmp1 && $solar_panel_terminal.getGuiParm( "gui_parm3" ) == tmp2 ) {
+			//$solar_panel_terminal.setGuiParm( "gui_parm17" , 1);
+			$solar_panel_terminal.setGuiParm( "networkState" , 11);
+			sys.print( "verify_pass ok\n" );
+		} else {
+			//$solar_panel_terminal.setGuiParm( "gui_parm17" , 2);
+			$solar_panel_terminal.setGuiParm( "networkState" , 12);
+			sys.print( "verify_pass not ok " + $solar_panel_terminal.getGuiParm( "gui_parm1" ) + $solar_panel_terminal.getGuiParm( "gui_parm2" ) + $solar_panel_terminal.getGuiParm( "gui_parm3" ) + "\n" );
+		}
+		*/
+		sys.print( "values: " + $solar_panel_terminal.getGuiParm( "gui_parm1" ) + $solar_panel_terminal.getGuiParm( "gui_parm2" ) + $solar_panel_terminal.getGuiParm( "gui_parm3" ) + "\n" );
+		$solar_panel_terminal.setGuiParm( "networkState" , 1);
 	}
 	
 	void func_holder() {
 		if( active_holder == 1 ) {
+			sys.print( "func_holder 1 \n" );
 			active_holder = 0;	
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Holder rotation terminated." );
-			$solar_panel_terminal.setGuiParm ( "gui_parm13" , "2" );
+			$solar_panel_terminal.setGuiParm( "networkState" , 2);			
 		} else {
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Holder rotation initiated." );
-			$solar_panel_terminal.setGuiParm ( "gui_parm13" , "1" );
+			sys.print( "func_holder 0 \n" );
 			active_holder = 1;
+			$solar_panel_terminal.setGuiParm( "networkState" , 1);			
 		}
 	}
 	
-	void func_p0() {
+	void func_p0() {	
 		if( active_panel0 == 1 ) {
+			sys.print( "func_p0 1 \n" );
 			active_panel0 = 0;	
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 1 deactivated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm14" , "2" );
+			$solar_panel_terminal.setGuiParm( "networkState" , 4);
+			$light_p0_0.setColor(1, 0, 0);
 		} else {
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 1 activated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm14" , "1" );
+			sys.print( "func_p0 0\n" );
 			active_panel0 = 1;
+			$solar_panel_terminal.setGuiParm( "networkState" , 3);
+			$light_p0_0.setColor(0, 1, 0);
 		}
 	}
 	
 	void func_p1() {
 		if( active_panel1 == 1 ) {
 			active_panel1 = 0;	
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 2 deactivated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm15" , "2" );
+			$solar_panel_terminal.setGuiParm( "networkState" , 6);
+			$light_p0_1.setColor(1, 0, 0);
 		} else {
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 2 activated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm15" , "1" );
 			active_panel1 = 1;
+			$solar_panel_terminal.setGuiParm( "networkState" , 5);
+			$light_p0_1.setColor(0, 1, 0);
 		}
 	}	
 	
 	void func_p2() {
 		if( active_panel2 == 1 ) {
 			active_panel2 = 0;	
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 3 deactivated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm16" , "2" );
+			$solar_panel_terminal.setGuiParm( "networkState" , 8);
+			$light_p0_2.setColor(1, 0, 0);
 		} else {
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 3 activated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm16" , "1" );
 			active_panel2 = 1;
+			$solar_panel_terminal.setGuiParm( "networkState" , 7);
+			$light_p0_2.setColor(0, 1, 0);
 		}
 	}
 	
 	void func_p3() {
 		if( active_panel3 == 1 ) {
 			active_panel3 = 0;	
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 4 deactivated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm17" , "2" );
+			$solar_panel_terminal.setGuiParm( "networkState" , 10);
+			$light_p0_3.setColor(1, 0, 0);
 		} else {
-			$solar_panel_terminal.setGuiParm ( "gui_parm12" , "Panel 4 activated" );
-			$solar_panel_terminal.setGuiParm ( "gui_parm17" , "1" );
 			active_panel3 = 1;
+			$solar_panel_terminal.setGuiParm( "networkState" , 9);
+			$light_p0_3.setColor(0, 1, 0);
 		}
 	}	
 
@@ -75,6 +111,32 @@ namespace map_test2 {
 			ent.rotateDownTo( axis, pos );
 		} else {
 			ent.rotateUpTo( axis, pos );
+		}	
+	}
+	
+	void checkLights() {
+		if( active_panel0 == 1 ) {
+			$light_p0_0.setColor(0, 1, 0);
+		} else {
+			$light_p0_0.setColor(1, 0, 0);
+		}
+		
+		if( active_panel1 == 1 ) {
+			$light_p0_1.setColor(0, 1, 0);
+		} else {
+			$light_p0_1.setColor(1, 0, 0);
+		}
+
+		if( active_panel2 == 1 ) {
+			$light_p0_2.setColor(0, 1, 0);
+		} else {
+			$light_p0_2.setColor(1, 0, 0);
+		}
+
+		if( active_panel3 == 1 ) {
+			$light_p0_3.setColor(0, 1, 0);
+		} else {
+			$light_p0_3.setColor(1, 0, 0);
 		}	
 	}
 	
@@ -97,34 +159,14 @@ namespace map_test2 {
 		// check for a status change
 		while( 1 ) {
 		
-			if( active_panel0 == 1 ) {
-				$light_p0_0.setColor(0, 1, 0);
-			} else {
-				$light_p0_0.setColor(1, 0, 0);
-			}
-			
-			if( active_panel1 == 1 ) {
-				$light_p0_1.setColor(0, 1, 0);
-			} else {
-				$light_p0_1.setColor(1, 0, 0);
-			}
-
-			if( active_panel2 == 1 ) {
-				$light_p0_2.setColor(0, 1, 0);
-			} else {
-				$light_p0_2.setColor(1, 0, 0);
-			}
-
-			if( active_panel3 == 1 ) {
-				$light_p0_3.setColor(0, 1, 0);
-			} else {
-				$light_p0_3.setColor(1, 0, 0);
-			}
+			//checkLights();
 			
 		while( active_holder ) {			
 			l = $solar_holder.getWorldOrigin();
 			a = $phold_ver.getAngles();
 			b = $phold_hor.getAngles();
+			
+			//checkLights();
 			
 			horizontal = sys.atan2deg( l_y - s_y, l_x - s_x );
 

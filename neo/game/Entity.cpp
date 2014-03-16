@@ -89,6 +89,7 @@ const idEventDef EV_StartSound( "startSound", "sdd", 'f' );
 const idEventDef EV_StopSound( "stopSound", "dd" );
 const idEventDef EV_FadeSound( "fadeSound", "dff" );
 const idEventDef EV_SetGuiParm( "setGuiParm", "ss" );
+const idEventDef EV_GetGuiParm( "getGuiParm", "s", 's' );
 const idEventDef EV_SetGuiFloat( "setGuiFloat", "sf" );
 const idEventDef EV_GetNextKey( "getNextKey", "ss", 's' );
 const idEventDef EV_SetKey( "setKey", "ss" );
@@ -152,6 +153,7 @@ ABSTRACT_DECLARATION( idClass, idEntity )
 	EVENT( EV_GetMaxs,				idEntity::Event_GetMaxs )
 	EVENT( EV_Touches,				idEntity::Event_Touches )
 	EVENT( EV_SetGuiParm, 			idEntity::Event_SetGuiParm )
+	EVENT( EV_GetGuiParm,			idEntity::Event_GetGuiParm )
 	EVENT( EV_SetGuiFloat, 			idEntity::Event_SetGuiFloat )
 	EVENT( EV_GetNextKey,			idEntity::Event_GetNextKey )
 	EVENT( EV_SetKey,				idEntity::Event_SetKey )
@@ -4268,6 +4270,15 @@ void idEntity::Event_SetGuiFloat( const char *key, float f ) {
 		}
 	}
 }
+
+void idEntity::Event_GetGuiParm( const char *key ) {
+        for ( int i = 0; i < MAX_RENDERENTITY_GUI; i++ ) {
+                if ( renderEntity.gui[ i ] ) {
+                        idThread::ReturnString( renderEntity.gui[ i ]->GetStateString( key ) );
+                }
+        }
+}
+
 
 /*
 ================
