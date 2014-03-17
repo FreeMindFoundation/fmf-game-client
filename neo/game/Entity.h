@@ -93,6 +93,8 @@ typedef enum {
 // for now, I'm allowing multiple threads.  We should reevaluate this later in the project
 #define MAX_SIGNAL_THREADS 16		// probably overkill, but idList uses a granularity of 16
 
+#define MP_GUI_STATES	8
+
 struct signal_t {
 	int					threadnum;
 	const function_t	*function;
@@ -370,7 +372,7 @@ private:
 
 	signalList_t *			signals;
 
-	int						mpGUIState;							// local cache to avoid systematic SetStateInt
+	int						mpGUIState[ MP_GUI_STATES ];							// local cache to avoid systematic SetStateInt
 
 private:
 	void					FixupLocalizedStrings();

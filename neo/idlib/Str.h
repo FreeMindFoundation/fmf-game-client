@@ -258,6 +258,7 @@ public:
 	static char *		RemoveColors( char *s );
 	static int			Cmp( const char *s1, const char *s2 );
 	static int			Cmpn( const char *s1, const char *s2, int n );
+	static int			Itoa( int num, char* str, int len, int base );
 	static int			Icmp( const char *s1, const char *s2 );
 	static int			Icmpn( const char *s1, const char *s2, int n );
 	static int			IcmpNoColor( const char *s1, const char *s2 );

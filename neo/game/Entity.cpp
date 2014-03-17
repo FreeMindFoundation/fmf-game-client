@@ -421,7 +421,9 @@ idEntity::idEntity() {
 	modelDefHandle	= -1;
 	memset( &refSound, 0, sizeof( refSound ) );
 
-	mpGUIState = -1;
+	for( int i = 0; i < MP_GUI_STATES; i++ ) {
+		mpGUIState[ i ] = -1;
+	}
 }
 
 /*
@@ -680,8 +682,9 @@ void idEntity::Save( idSaveGame *savefile ) const {
 			}
 		}
 	}
-
-	savefile->WriteInt( mpGUIState );
+	for( i = 0; i < MP_GUI_STATES; i++ ) {
+		savefile->WriteInt( mpGUIState[ i ] );
+	}
 }
 
 /*
@@ -761,8 +764,10 @@ void idEntity::Restore( idRestoreGame *savefile ) {
 			}
 		}
 	}
-
-	savefile->ReadInt( mpGUIState );
+	
+	for( i = 0; i < MP_GUI_STATES; i++ ) {
+		savefile->ReadInt( mpGUIState[ i ] );
+	}
 
 	// restore must retrieve modelDefHandle from the renderer
 	if ( modelDefHandle != -1 ) {
@@ -4685,11 +4690,29 @@ idEntity::WriteGUIToSnapshot
 ================
 */
 void idEntity::WriteGUIToSnapshot( idBitMsgDelta &msg ) const {
+	int i;
+	idStr name;
+	int guiNetStates;
+
+	guiNetStates = MP_GUI_STATES;
+	// every state has an extra byte force flag
+	guiNetStates *= 2;
 	// no need to loop over MAX_RENDERENTITY_GUI at this time
 	if ( renderEntity.gui[ 0 ] ) {
-		msg.WriteByte( renderEntity.gui[ 0 ]->State().GetInt( "networkState" ) );
+		// network states
+		// nsXf forces the gui to handle the state
+		for( i = 0; i < guiNetStates; i++ ) {
+			// ns0, ns0f, ns1, ...
+			name = ( "ns" + i );
+			if( (i % 2) != 0 ) {
+				name += "f";	// force
+			}
+			msg.WriteByte( renderEntity.gui[ 0 ]->State().GetInt( name.c_str() ) );
+		}
 	} else {
-		msg.WriteByte( 0 );
+		for( i = 0; i < guiNetStates; i++ ) {
+			msg.WriteByte( 0 );
+		}
 	}
 }
 
@@ -4699,14 +4722,47 @@ idEntity::ReadGUIFromSnapshot
 ================
 */
 void idEntity::ReadGUIFromSnapshot( const idBitMsgDelta &msg ) {
+	/*
 	int state;
 	idUserInterface *gui;
 	state = msg.ReadByte( );
 	gui = renderEntity.gui[ 0 ];
-	if ( gui && state != mpGUIState ) {
+	if ( gui && state != mpGUIState   ) {
 		mpGUIState = state;
 		gui->SetStateInt( "networkState", state );
 		gui->HandleNamedEvent( "networkState" );
+	}
+	*/
+	
+	int i;
+	idUserInterface *gui;
+	int state, force;
+	idStr name;
+	char buffer[ 32 ];
+
+	gui = renderEntity.gui[ 0 ];
+	
+	if ( gui ) {
+		for( i = 0; i < MP_GUI_STATES; i++ ) {
+			state = msg.ReadByte( );
+			force = msg.ReadByte( );
+			memset( buffer, 0, sizeof( buffer ) );
+			name = "ns";
+			idStr::Itoa( i, buffer, sizeof( buffer ), 10 );
+			name += buffer;
+			if( force == 1 || mpGUIState[ i ] != state ) {
+				mpGUIState[ i ] = state;
+				gui->SetStateInt( name.c_str(), state );
+				
+				gui->HandleNamedEvent( name.c_str() );
+				common->Printf( "gui read: %s state:  [%d]\n", name.c_str(), state );
+			}
+		}
+	} else {
+		for( i = 0; i < MP_GUI_STATES; i++ ) {
+			msg.ReadByte( );
+			msg.ReadByte( );
+		}
 	}
 }
 
