@@ -554,6 +554,7 @@ private:
 	bool					airless;
 	int						airTics;				// set to pm_airTics at start, drops in vacuum
 	int						lastAirDamage;
+	bool					newAirless;
 
 	bool					gibDeath;
 	bool					gibsLaunched;

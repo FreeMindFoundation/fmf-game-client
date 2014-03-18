@@ -4155,6 +4155,7 @@ idPlayer::HandleSingleGuiCommand
 */
 bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 	idToken token;
+	int j;
 
 	if ( !src->ReadToken( &token ) ) {
 		return false;
@@ -4162,6 +4163,24 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 
 	if ( token == ";" ) {
 		return false;
+	}
+
+	if ( token.Icmp( "getSolarMB" ) == 0 ) {
+		common->Printf( "getSolarMB\n" );
+		
+		for ( j = 0; j < inventory.items.Num(); j++ ) {
+			idDict *item = inventory.items[ j ];
+			const char *iname = item->GetString( "inv_name" );
+			if( idStr::Cmp( iname, "Atmega Board" ) == 0 ) {			
+				if( !focusUI ) {
+					common->Printf( "!focusUI\n" );
+					return false;
+				}
+
+				focusUI->SetStateString( "gui_parm5", "234 0 1 2 3 4" );
+				focusUI->SetStateInt( "gui_parm4", 1 );
+			}
+		}
 	}
 
 	if ( token.Icmp( "addhealth" ) == 0 ) {
@@ -4177,6 +4196,7 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 			if ( health > 100 ) {
 				health = 100;
 			}
+
 		}
 		return true;
 	}
@@ -5033,11 +5053,14 @@ void idPlayer::SetCurrentHeartRate( void ) {
 idPlayer::UpdateAir
 ==============
 */
+
+#undef CLIENT_ONLY // server handles various stuff for us
 void idPlayer::UpdateAir( void ) {	
 	if ( health <= 0 ) {
 		return;
 	}
 
+#ifdef CLIENT_ONLY
 	// see if the player is connected to the info_vacuum
 	bool	newAirless = false;
 
@@ -5057,39 +5080,48 @@ void idPlayer::UpdateAir( void ) {
 			newAirless = gameRenderWorld->AreasAreConnected( gameLocal.vacuumAreaNum, areaNum, PS_BLOCK_AIR );
 		}
 	}
+#endif
 
 	if ( newAirless ) {
 		if ( !airless ) {
+#ifdef CLIENT_ONLY
 			StartSound( "snd_decompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );
 			StartSound( "snd_noAir", SND_CHANNEL_BODY2, 0, false, NULL );
+#endif
 			if ( hud ) {
 				hud->HandleNamedEvent( "noAir" );
 			}
 		}
+#ifdef CLIENT_ONLY
 		airTics--;
 		if ( airTics < 0 ) {
 			airTics = 0;
 			// check for damage
 			const idDict *damageDef = gameLocal.FindEntityDefDict( "damage_noair", false );
 			int dmgTiming = 1000 * ((damageDef) ? damageDef->GetFloat( "delay", "3.0" ) : 3.0f );
+
 			if ( gameLocal.time > lastAirDamage + dmgTiming ) {
 				Damage( NULL, NULL, vec3_origin, "damage_noair", 1.0f, 0 );
 				lastAirDamage = gameLocal.time;
 			}
 		}
-		
+#endif		
 	} else {
 		if ( airless ) {
+#ifdef CLIENT_ONLY
 			StartSound( "snd_recompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );
 			StopSound( SND_CHANNEL_BODY2, false );
+#endif
 			if ( hud ) {
 				hud->HandleNamedEvent( "Air" );
 			}
 		}
+#ifdef CLIENT_ONLY
 		airTics+=2;	// regain twice as fast as lose
 		if ( airTics > pm_airTics.GetInteger() ) {
 			airTics = pm_airTics.GetInteger();
 		}
+#endif
 	}
 
 	airless = newAirless;
@@ -7866,6 +7898,8 @@ void idPlayer::ClientPredictionThink( void ) {
 		UpdateWeapon();
 	}
 
+	UpdateAir();
+
 	UpdateHud();
 
 	if ( gameLocal.isNewFrame ) {
@@ -8058,6 +8092,11 @@ void idPlayer::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	weaponGone = msg.ReadBits( 1 ) != 0;
 	isLagged = msg.ReadBits( 1 ) != 0;
 	isChatting = msg.ReadBits( 1 ) != 0;
+
+	//airless = msg.ReadByte();
+	airTics = msg.ReadLong();
+	lastAirDamage = msg.ReadLong();
+	newAirless = msg.ReadByte();
 
 	// no msg reading below this
 
