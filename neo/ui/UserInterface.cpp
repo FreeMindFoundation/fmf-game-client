@@ -34,6 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "Window.h"
 #include "UserInterfaceLocal.h"
 
+
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 
 idUserInterfaceManagerLocal	uiManagerLocal;
@@ -260,6 +261,10 @@ const char *idUserInterfaceLocal::Comment() const {
 		return desktop->GetComment();
 	}
 	return "";
+}
+
+void idUserInterfaceLocal::SetInteractive( const bool i )  {
+	interactive = i;
 }
 
 bool idUserInterfaceLocal::IsInteractive() const {

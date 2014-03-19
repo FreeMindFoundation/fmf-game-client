@@ -163,6 +163,7 @@ public:
 	void					GetPersistantData( idDict &dict );
 	void					RestoreInventory( idPlayer *owner, const idDict &dict );
 	bool					Give( idPlayer *owner, const idDict &spawnArgs, const char *statname, const char *value, int *idealWeapon, bool updateHud );
+	bool					Transfer( idInventory *owner, idDict *item );
 	void					Drop( const idDict &spawnArgs, const char *weapon_classname, int weapon_index );
 	ammo_t					AmmoIndexForAmmoClass( const char *ammo_classname ) const;
 	int						MaxAmmoForAmmoClass( idPlayer *owner, const char *ammo_classname ) const;

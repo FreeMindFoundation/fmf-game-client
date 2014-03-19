@@ -135,6 +135,8 @@ public:
 
 	int						health;					// FIXME: do all objects really need health?
 
+	idList<idDict *>		guiItems;
+
 	struct entityFlags_s {
 		bool				notarget			:1;	// if true never attack or target this entity
 		bool				noknockback			:1;	// if true no knockback from hits

@@ -716,6 +716,16 @@ void idInventory::AddPickupName( const char *name, const char *icon ) {
 	} 
 }
 
+bool idInventory::Transfer( idInventory *owner, idDict *item ) {
+	if( !owner || !item ) {
+		return false;
+	}
+
+	owner->items.Remove( item );
+	items.Append( item );
+	return true;
+}
+
 /*
 ==============
 idInventory::Give
@@ -4165,20 +4175,69 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 		return false;
 	}
 
-	if ( token.Icmp( "getSolarMB" ) == 0 ) {
-		common->Printf( "getSolarMB\n" );
-		
+	if ( token.Icmp( "uninstallSolarMB" ) == 0 ) {
+			for ( j = 0; j < entityGui->guiItems.Num(); j++ ) {
+				//this should always be a MB
+				idDict *item = entityGui->guiItems[ j ];
+				
+				entityGui->guiItems.Remove( item );
+				inventory.items.Append( item );
+
+				if( !entityGui->GetRenderEntity() || !entityGui->GetRenderEntity()->gui[ 0 ] ) {				
+					return false;
+				}
+				entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 6 );	// lock screen
+
+				break;
+			}	
+	}
+
+	if ( token.Icmp( "installSolarMB" ) == 0 ) {
+		if( entityGui->guiItems.Num() != 0 ) {
+			entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 5 );
+			return false;
+		}
+
 		for ( j = 0; j < inventory.items.Num(); j++ ) {
+			idStr cmd, pass;
 			idDict *item = inventory.items[ j ];
-			const char *iname = item->GetString( "inv_name" );
-			if( idStr::Cmp( iname, "Atmega Board" ) == 0 ) {			
-				if( !focusUI ) {
-					common->Printf( "!focusUI\n" );
+			const char *iname = item->GetString( "inv_link" );
+			if( !iname ) {
+				common->Printf( "empty \n" );
+				continue;
+			}		
+
+			if( !idStr::Cmp( iname, "gp_board" ) ) {			
+				if( !entityGui->GetRenderEntity() || !entityGui->GetRenderEntity()->gui[ 0 ] ) {									return false;
+				}
+				cmd = "P05 234";
+				common->Printf( "gp_board\n" );
+				if( cmd.Length() != 7 ) {
+					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 2 );	// error length
 					return false;
 				}
 
-				focusUI->SetStateString( "gui_parm5", "234 0 1 2 3 4" );
+				if( idStr::Cmp( (cmd.Mid( 0, 3 )).c_str(), "P05" ) ) {
+					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 3 );	// error port
+					return false;
+				}
+				entityGui->GetRenderEntity()->gui[ 0 ]->IsInteractive();
+				pass = cmd.Mid( 4, 3 );
+				if( !pass.IsNumeric() ) {
+					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 4 );	// error pass !numeric
+					return false;
+				}				
+				
+				// transfer board
+				inventory.items.Remove( item );
+				entityGui->guiItems.Append( item );
+				
+				common->Printf( "installSolarMB OK\n" );
+
+				focusUI->SetStateString( "gui_parm5", pass.c_str() );
 				focusUI->SetStateInt( "gui_parm4", 1 );
+
+				return true;
 			}
 		}
 	}

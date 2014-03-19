@@ -41,11 +41,10 @@ If you have questions concerning this license or the applicable additional terms
 class idFile;
 class idDemoFile;
 
-
 class idUserInterface {
 public:
 	virtual						~idUserInterface() {};
-
+	
 								// Returns the name of the gui.
 	virtual const char *		Name() const = 0;
 
@@ -54,6 +53,8 @@ public:
 
 								// Returns true if the gui is interactive.
 	virtual bool				IsInteractive() const = 0;
+
+	virtual void				SetInteractive( const bool i ) = 0;
 
 	virtual bool				IsUniqued() const = 0;
 
