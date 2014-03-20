@@ -1,0 +1,45 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	windowDef main
+	{
+		rect	0,0,640,480
+		visible	1
+		noevents	1
+	}
+
+/*	onTime 0 {
+		set "cmd" "loginbox" ;
+	}
+	*/
+	onESC {
+		set "cmd" "quit" ;
+	}
+	
+	windowDef play
+	{
+		rect	510,5,113,64
+		visible	1
+		forecolor	1,1,1,1
+		text	"play"
+		textscale	1
+
+		onAction {
+			set "cmd" "loginBox";
+		}
+
+	}
+	windowDef quit
+	{
+		rect	509,66,119,79
+		visible	1
+		forecolor	1,1,1,1
+		text	"quit"
+		textscale	1
+
+		onAction {
+			set "cmd" "quit";
+		}
+
+	}
+}

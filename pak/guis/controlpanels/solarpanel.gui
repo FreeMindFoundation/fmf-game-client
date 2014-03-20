@@ -1,0 +1,1475 @@
+windowDef Desktop
+{
+	comment	"0 - manually set code. gui_parms 1-3 are the access code. Use a unique number for each, no repeated numbers. gui_parm4 is the terminal power. gui_parm5 is the solar panel number, which defaults to 001 if left blank. 6-10 are solar panel holder and each panel individually. 11 is the new access code. 12 is the status line."
+	rect	0 ,0 ,640 ,480
+	background	"guis/assets/cpuserver/bg.tga"
+	matcolor	0,0,0,1
+	visible	1
+	float	"unlocked"	0
+	float	"count"	0
+	float	"keypad"	0
+	float	"new_comb"	0
+	
+	/*
+	onTrigger {
+	
+		if ("Desktop::unlocked" == 0) { 
+			set	"cmd" "activate ; play guisounds_action" ;
+			resetTime "Unlock" "0" ;
+			set "Desktop::unlocked" "1" ;
+			set "desktop::count" "0";
+			set "desktop::num1" "0";
+			set "desktop::num2" "0";
+			set "desktop::num3" "0";
+		}
+	}
+	*/
+	
+	onEvent {
+		if( "gui::gui_parm17" > 0 ) {
+			if( "gui::gui_parm17" == 1 ) {
+					set "gui::gui_parm17" 0;
+					//set	"cmd" "play guisounds_connect3" ;
+					set "gui::networkState" "1";
+					set "Desktop::unlocked" "1" ;
+					resetTime "Unlock" "0" ;
+					
+					//runScript "gui::gui_parm20";
+					
+			} 
+			
+		}
+	}
+	
+	onNamedEvent networkState {	
+	//onEvent {	
+		//runScript "gui::gui_parm20";
+		
+		if("gui::networkState" == 1) {
+					//set	"cmd" "activate; play guisounds_connect3" ;
+					//resetTime "Unlock" "0" ;
+					//set "Desktop::unlocked" "1" ;
+					//set "gui::networkState" "0";
+					//transition "KeypadText::forecolor" "1 1 1 0" "1 1 1 0.6" "1000" "1" "0" ;
+					//transition "KeypadText1::forecolor" "1 0.1 0.1 0.9" "1 0.1 0.1 0" "1000" "1" "0" ;
+					//set	"cmd" "play guisounds_error" ;	
+					
+					runScript "gui::gui_parm21";
+		} /*
+		if("gui::networkState" == 1) {
+					runScript "gui::gui_parm20";
+					set	"cmd" "play guisounds_error" ;
+					set "gui::networkState" "0";
+					
+		} */ /* else if ("gui::networkState" == 1) {
+			set	"holder_ctrl::backcolor" "0,1,0,1";
+			set	"status_line::text" "Holder rotation initiated.";
+		} else if("gui::networkState" == 2) {
+			set	"holder_ctrl::backcolor" "1,0,0,1";
+			set	"status_line::text" "Holder rotation terminated.";
+		} else if("gui::networkState" == 3) {
+			set	"panel0_ctrl::backcolor" "0,1,0,1";
+			set	"status_line::text" "Panel 1 activated.";
+		} else if("gui::networkState" == 4) {
+			set	"panel0_ctrl::backcolor" "1,0,0,1";
+			set	"status_line::text" "Panel 1 deactivated.";
+		} else if("gui::networkState" == 5) {
+			set "desktop::status_p1" "1";
+			set	"status_line::text" "Panel 2 activated.";
+		} else if("gui::networkState" == 6) {
+			set	"panel1_ctrl::backcolor" "0,1,0,1";
+			set	"status_line::text" "Panel 2 deactivated.";
+		} else if("gui::networkState" == 7) {
+			set	"panel2_ctrl::backcolor" "0,1,0,1";
+			set	"status_line::text" "Panel 3 activated.";
+		} else if("gui::networkState" == 8) {
+			set	"panel2_ctrl::backcolor" "1,0,0,1";
+			set	"status_line::text" "Panel 3 deactivated.";
+		} else if("gui::networkState" == 9) {
+			set	"panel3_ctrl::backcolor" "0,1,0,1";
+			set	"status_line::text" "Panel 4 activated.";
+		} else if("gui::networkState" == 10) {
+			set	"panel3_ctrl::backcolor" "1,0,0,1";
+			set	"status_line::text" "Panel 4 deactivated.";
+		} 
+		*/
+	}
+		
+	windowDef Logo1
+	{
+		rect	5,47,630,422
+		visible	0
+		background	"guis/assets/common/mlogo"
+		matcolor	0.40000001,0,0,0.60000002
+	}
+	windowDef BGHexGrid
+	{
+		rect	5,5,630,470
+		visible	1
+		background	"gui/common/hexgrid"
+		matcolor	1,0.5,0.5,0.07
+		matscalex	9
+		matscaley	9
+	}
+	windowDef Bglow1
+	{
+		rect	0,0,-640,480
+		background	"guis/assets/cpuserver/bglow.tga"
+		visible	1
+		matcolor	0.4, 0.5, 0.4, 0.1
+	}
+	windowDef Logo2
+	{
+		rect	192,102,258,165
+		visible	0
+		background	"guis/assets/common/mlogo"
+		matcolor	0.8, 0.7, 0.7,0
+	}
+	windowDef Bglow
+	{
+		rect	0,0,-640,480
+		background	"guis/assets/cpuserver/bglow.tga"
+		visible	0
+		matcolor	0.2, 0.6, 0.2, pdfullfade [ time * .0008 ]/6
+	}
+	windowDef Bglow2
+	{
+		rect	0,0,-640,480
+		background	"guis/assets/cpuserver/bglow.tga"
+		visible	1
+		matcolor	0.6, 0.3, 0.2, pdfullfade [ time * .001 ]/5
+	}
+	windowDef TopBox
+	{
+		rect	363,2,274,96
+		visible	1
+		windowDef TBTop
+		{
+			rect	101,3,84,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_horiz"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBcorner1
+		{
+			rect	19,5,82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBcorner2
+		{
+			rect	185,5,-82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBcorner3
+		{
+			rect	19,61,82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBcorner4
+		{
+			rect	185,61,-82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBBottom
+		{
+			rect	101,63,84,30
+			visible	1
+			background	"guis/assets/common/1pxborder_horiz"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBRight
+		{
+			rect	185,35,-82,-26
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.8
+		}
+		windowDef TBLeft
+		{
+			rect	19,35,82,-26
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.8
+		}
+		windowDef LockerNumText
+		{
+			rect	25,8,231,81
+			text	"001"
+			font	"fonts/micro"
+			textscale	1.4
+			forecolor	1,1,1,0.8
+			visible	1
+			textalign	2
+		}
+		windowDef LockerIDText
+		{
+			rect	10,8,239,26
+			text	"PANEL ID"
+			textscale	0.38
+			forecolor	0.60000002,0.80000001,1,0.80000001
+			visible	1
+			textalign	2
+		}
+	}
+	windowDef StatusArea
+	{
+		rect	1,11,395,87
+		visible	1
+		windowDef SourceText
+		{
+			rect	13,22,287,38
+			visible	1
+			forecolor	1,1,1,0.80000001
+			text	"TERMINAL POWER:"
+			textscale	0.6
+			textalign	1
+		}
+		windowDef bar1Left
+		{
+			rect	356,3,-32,32
+			visible	1
+			background	"guis/assets/common/titlebar_edge"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef bar1Mid
+		{
+			rect	59,3,297,32
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	0.8, 0.7, 0.7,0.3
+			forecolor	1,1,1,1
+			text	"SOLAR PANEL"
+			textscale	0.30000001
+			textalign	1
+			textaligny	2
+		}
+		windowDef bar1Right
+		{
+			rect	2,3,-57,32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef bar2Left
+		{
+			rect	357,51,-32,32
+			visible	1
+			background	"guis/assets/common/titlebar_edge"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef bar2Mid
+		{
+			rect	58,51,299,32
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	0.80000001,0.69803923,0.69803923,0.29803923
+		}
+		windowDef bar2Right
+		{
+			rect	1,51,-57,-32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+	}
+	windowDef Contents
+	{
+		rect	0,96,640,93
+		visible	1
+		windowDef Contentsbg
+		{
+			rect	33,6,575,80
+			visible	1
+			background	"guis/assets/cpuserver/bgWhite3"
+			matcolor	0.4,0,0,0.3
+		}
+		windowDef ContentsText
+		{
+			rect	51,12,537,69
+			text	"#str_02322"
+			textscale	1.10000002
+			textalign	1
+			forecolor	1,1,1,0.80000001
+			visible	1
+
+			onAction { 
+				if( "Desktop::unlocked" == 1 ) {
+					set "Desktop::unlocked" "0" ;
+					resetTime "Lock" "0" ;
+				} else {
+					set "ContentsText::text" "NEW COMBINATION" ;
+					set "Desktop::new_comb" "1" ;
+				}
+			}
+
+		}
+		windowDef Contentscorner1
+		{
+			rect	46,5,82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Contentscorner2
+		{
+			rect	513,5,-82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Contentscorner3
+		{
+			rect	46,58,82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Contentscorner4
+		{
+			rect	513,58,-82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef ContentsBottom
+		{
+			rect	128,60,385,30
+			visible	1
+			background	"guis/assets/common/1pxborder_horiz"
+			matcolor	1,1,1,0.5
+		}
+		windowDef ContentsRight
+		{
+			rect	513,35,-82,-23
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.5
+		}
+		windowDef ContentsLeft
+		{
+			rect	46,35,82,-23
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.5
+		}
+		windowDef ContentsTop
+		{
+			rect	128,3,385,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_horiz"
+			matcolor	1,1,1,0.5
+		}
+	}
+	windowDef StatusBar
+	{
+		rect	0,360,640,120
+		visible	1
+		windowDef Statusbar1Mid
+		{
+			rect	59,7,522,32
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	0.7, 0.8, 0.85,0
+		}
+		windowDef Statusbar1Left
+		{
+			rect	2,7,-57,32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.7, 0.8, 0.85,0
+		}
+		windowDef Statusbar1Right
+		{
+			rect	581,7,57,32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.7, 0.8, 0.85,0
+		}
+		windowDef Statusbar2Mid
+		{
+			rect	58,67,522,32
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef Statusbar2Right
+		{
+			rect	580,67,57,-32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef Statusbar2Left
+		{
+			rect	1,67,-57,-32
+			visible	1
+			background	"guis/assets/common/titlebar_corner"
+			matcolor	0.8, 0.7, 0.7,0.3
+		}
+		windowDef StatusText
+		{
+			rect	1,16,638,100
+			text	"#str_00017"
+			textscale	1
+			textalign	1
+			forecolor	1,0.01,0.01,0.7
+			visible	1
+			font	"fonts/micro"
+		}
+		windowDef Statusbar3Right
+		{
+			rect	587,27,-48,52
+			visible	1
+			background	"guis/assets/common/titlebar_edge"
+			matcolor	1, 0.2, 0,0.3
+		}
+		windowDef Statusbar3Mid2
+		{
+			rect	452,27,135,52
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	1, 0.2, 0,0.3
+		}
+		windowDef Statusbar3Left
+		{
+			rect	5,27,48,52
+			visible	1
+			background	"guis/assets/common/titlebar_edge"
+			matcolor	1, 0.2, 0,0.3
+		}
+		windowDef Statusbar3Mid1
+		{
+			rect	53,27,135,52
+			visible	1
+			background	"guis/assets/common/titlebar_mid"
+			matcolor	1, 0.2, 0,0.3
+		}
+	}
+	windowDef Dirt2
+	{
+		rect	1,3,-640,480
+		matcolor	1, 1, 1 ,0.8
+		visible	1
+		background	"guis/assets/common/dirt1"
+		noevents	1
+	}
+	windowDef Keypad
+	{
+		rect	5,188,628,198
+		visible	1
+		windowDef Keypadbg
+		{
+			rect	4,5,621,191
+			visible	1
+			background	"guis/assets/cpuserver/bgWhite3"
+			matcolor	0,0,0,0.3
+		}
+		windowDef KeypadText
+		{
+			rect	75,-2,480,42
+			text	"#str_00714"
+			textscale	0.55
+			textalign	1
+			forecolor	1,1,1,0.6
+			visible	1
+			font	"fonts/micro"
+		}
+		windowDef KeypadText1
+		{
+			rect	75,-2,480,42
+			text	"#str_00715"
+			textscale	0.55
+			textalign	1
+			forecolor	1,1,1,0
+			visible	1
+			font	"fonts/micro"
+		}
+		windowDef Keypadcorner1
+		{
+			rect	11,7,82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Keypadcorner2
+		{
+			rect	538,7,-82,-30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Keypadcorner3
+		{
+			rect	11,164,82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef Keypadcorner4
+		{
+			rect	538,164,-82,30
+			visible	1
+			background	"guis/assets/common/1pxborder_cornersm"
+			matcolor	1,1,1,0.5
+		}
+		windowDef KeypadBottom
+		{
+			rect	93,166,445,30
+			visible	1
+			background	"guis/assets/common/1pxborder_horiz"
+			matcolor	1,1,1,0.5
+		}
+		windowDef KeypadLeft
+		{
+			rect	11,37,82,-127
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.5
+		}
+		windowDef KeypadRight
+		{
+			rect	538,37,-82,-127
+			visible	1
+			background	"guis/assets/common/1pxborder_vert"
+			matcolor	1,1,1,0.5
+		}
+		windowDef TriggerButton0
+		{
+			rect	56,40,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	0
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				/*
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "0";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;				
+					} 
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "0";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "0";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+		
+				}
+				
+				if( "desktop::count" == 3 ) {
+				*/
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				//}
+				
+			}
+
+		}
+		windowDef TriggerButton1
+		{
+			rect	161,40,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"1"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				
+				set	"cmd" "play guisounds_click" ;
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "1";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+										
+					}
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "1";
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "1";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}
+				
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}
+				
+			}
+
+		}
+		windowDef TriggerButton2
+		{
+			rect	267,40,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"2"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				
+				set	"cmd" "play guisounds_click" ;
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "2";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;					
+					} 
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "2";
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "2";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}				
+				
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}
+			}
+
+		}
+		windowDef TriggerButton3
+		{
+			rect	373,40,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"3"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "3";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+				
+					} 
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "3";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "3";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}	
+				
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}				
+			}
+
+		}
+		windowDef TriggerButton4
+		{
+			rect	479,40,95,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"4"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "4";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;					
+					} 
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "4";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "4";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}	
+
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}				
+			}
+
+		}
+		windowDef TriggerButton5
+		{
+			rect	56,109,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"5"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "5";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;					
+					}
+					if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "5";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} 
+					if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "5";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}			
+
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}				
+			}
+
+		}
+		windowDef TriggerButton6
+		{
+			rect	161,109,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"6"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "6";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					
+					} else if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "6";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} else if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "6";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}	
+
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}				
+			}
+
+		}
+		windowDef TriggerButton7
+		{
+			rect	267,109,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"7"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "7";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+										
+					} else if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "7";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} else if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "7";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}				
+				
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}
+			}
+
+		}
+		windowDef TriggerButton8
+		{
+			rect	373,109,96,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"8"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "8";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+						
+					} else if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "8";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} else if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "8";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}				
+				
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}
+			}
+
+		}
+		windowDef TriggerButton9
+		{
+			rect	479,109,95,64
+			background	"guis/assets/cpuserver/bgWhite"
+			matcolor	1, 1, 1, 0.1
+			text	"9"
+			textscale	0.9
+			textalign	1
+			forecolor	1,1,1,0.4
+			textaligny	-1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				set "matcolor" "1 0.7 0.2 0.3" ;
+				set "forecolor" "1 1 1 0.6" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "1 0.7 0.2 0.3" "1 1 1 0.1" "200" ;
+				transition "forecolor" "1 1 1 0.6" "1 1 1 0.4" "200" ;
+			}
+
+			onAction {
+				set	"cmd" "play guisounds_click" ;
+				
+				if ("desktop::count" < 3) {	
+					if ("desktop::count" == 2) {
+						set "gui::gui_parm3" "9";
+						set "desktop::count" "3";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+											
+					} else if ("desktop::count" == 1) {
+						set "gui::gui_parm2" "9";					
+						set "desktop::count" "2";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					} else if ("desktop::count" == 0) {
+						set "gui::gui_parm1" "9";
+						set "desktop::count" "1";
+						//set "noevents" "1" ;							
+						set "matcolor" "0.6 0.8 1 0.4" ;
+					}
+				} else {
+					set "desktop::count" "0";
+				}			
+
+				if( "desktop::count" == 3 ) {
+					EvalRegs;
+					runScript "gui::gui_parm16";
+				}				
+			}
+
+		}
+	}
+	windowDef Unlock
+	{
+		notime	1
+		visible	0
+
+		onTime 0 {
+			set "bglow2::visible" "0" ;
+			set "bglow::visible" "1" ;
+			
+			transition "Keypad::rect" "5 188 628 198" "5 392 628 0" "500" "0.4" "0.5" ;
+			transition "Logo1::matcolor" "0.4 0 0 0.6" "0.1 0.5 0.4 0.5" "500" ;
+			transition "Contents::rect" "0 96 640 93" "0 272 640 93" "500" "0.4" "0.5" ;
+			transition "Contentsbg::matcolor" "0.4 0 0 0.3" "0.2 0.4 0.3 0.3" "500" ;
+			transition "StatusText::forecolor" "1 0.01 0.01 0.7" "1 0.01 0.01 0" "500" ;
+			transition "StatusBar3Mid1::rect" "53 27 135 52" "53 27 87 52" "500" "0.4" "0.5" ;
+			transition "StatusBar3Mid2::rect" "452 27 135 52" "499 27 88 52" "500" "0.4" "0.5" ;
+			transition "StatusBar3Mid1::matcolor" "1 0.2 0 0.3" "0.6 0.8 0.7 0.3" "500" ;
+			transition "StatusBar3Mid2::matcolor" "1 0.2 0 0.3" "0.6 0.8 0.7 0.3" "500" ;
+			transition "StatusBar3Left::matcolor" "1 0.2 0 0.3" "0.6 0.8 0.7 0.3" "500" ;
+			transition "StatusBar3Right::matcolor" "1 0.2 0 0.3" "0.6 0.8 0.7 0.3" "500" ;
+			
+			transition "Bar1Right::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;
+			transition "bar1Mid::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;
+			transition "bar1Left::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;			
+			transition "bar2Right::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;
+			transition "bar2Mid::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;
+			transition "bar2Left::matcolor" "0.8 0.7 0.7 0.3" "0.7 0.8 0.85 0.3" "500" ;			
+		}
+
+		onTime 400 {
+			transition "Logo2::matcolor" "1 1 1 1" "0.6 1 0.8 0.9" "300" ;
+		}
+
+		onTime 500 {
+			transition "Statusbar2Left::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;
+			transition "Statusbar2Mid::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;
+			transition "Statusbar2Right::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;			
+			
+			transition "Statusbar1Left::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;
+			transition "Statusbar1Mid::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;
+			transition "Statusbar1Right::matcolor" "1 1 1 0.5" "0.7 0.8 0.85 0.3" "400" ;
+		}
+
+		onTime 550 {
+			set "StatusText::text" "#str_00023" ;
+			set "ContentsText::text" "LOGOUT" ;
+			transition "StatusText::forecolor" "1 1 1 0.8" "0.6 1 0.8 0.6" "400" ;
+			resetTime "Clickfade" "0" ;
+			set "Panels::visible" "1" ;
+		}
+
+	}
+	windowDef Clickfade
+	{
+		matcolor	0, 0, 0, 0
+		notime	1
+		visible	0
+		rect	0,0,0,0
+
+		onTime 0 {
+			//if ("desktop::unlocked" == 0) {
+				transition "KeypadText::forecolor" "1 1 1 0" "1 1 1 0.6" "1000" "1" "0" ;
+				transition "KeypadText1::forecolor" "1 0.1 0.1 0.9" "1 0.1 0.1 0" "1000" "1" "0" ;
+				
+				set	"cmd" "play guisounds_error" ;
+				
+				set "TriggerButton0::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton1::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton2::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton3::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton4::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton5::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton6::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton7::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton8::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton9::matcolor" "1 1 1 0.1" ;
+				
+				set "TriggerButton0::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton1::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton2::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton3::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton4::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton5::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton6::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton7::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton8::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton9::forecolor" "1 1 1 0.4" ;				
+				
+				set "TriggerButton0::noevents" "0" ;
+				set "TriggerButton1::noevents" "0" ;
+				set "TriggerButton2::noevents" "0" ;
+				set "TriggerButton3::noevents" "0" ;
+				set "TriggerButton4::noevents" "0" ;
+				set "TriggerButton5::noevents" "0" ;
+				set "TriggerButton6::noevents" "0" ;
+				set "TriggerButton7::noevents" "0" ;
+				set "TriggerButton8::noevents" "0" ;
+				set "TriggerButton9::noevents" "0" ;
+				
+
+				//}
+		}
+
+	}
+	windowDef Static
+	{
+		rect	-9,-10,-660,500
+		visible	1
+		background	"gui/static"
+		matcolor	1, 1, 1, pdhalffade[ time * 0.001 ] / 15
+	}
+	windowDef Outerglow
+	{
+		rect	0 ,0 ,-640 ,480
+		background	"guis/assets/common/outerglow"
+		matcolor	1 ,1 ,1 , pdflick [ time * .0025 ] / 6
+		visible	1
+	}
+	windowDef Outershadow
+	{
+		rect	0 ,0 ,-640 ,480
+		background	"guis/assets/common/outershadow"
+		matcolor	1 ,1 ,1 ,1
+		visible	1
+	}
+	windowDef Addhighlight
+	{
+		rect	0 ,0 ,-640 ,480
+		background	"gui/addhighlight"
+		matcolor	0.5 ,0.4 ,0.15 ,1
+		visible	1
+	}
+	windowDef scanlines1
+	{
+		rect	0,0,640,480
+		matcolor	0.1,0.1,0.1,1
+		background	"gui/test/gui_scanlines5"
+		visible	1
+		matscaley	2
+	}
+	windowDef Dirt
+	{
+		rect	0 ,0 ,-640 ,480
+		matcolor	1, 1, 1 ,0.3
+		visible	1
+		background	"guis/assets/common/dirt3"
+		noevents	1
+	}
+	windowDef Lock
+	{
+		rect	0,0,1,5
+		visible	1
+		notime	1
+
+		onTime 0 {
+			set "bglow2::visible" "1" ;
+			set "bglow::visible" "0" ;
+			set "Panels::visible" "0" ;
+			transition "Keypad::rect" "5 392 628 0" "5 188 628 198" "500" "0.4" "0.5" ;
+			transition "Logo1::matcolor" "0.1 0.5 0.4 0.5" "0.4 0 0 0.6" "500" ;
+			transition "Contents::rect" "0 272 640 93" "0 96 640 93" "500" "0.4" "0.5" ;
+			transition "Contentsbg::matcolor" "0.2 0.4 0.3 0.3" "0.4 0 0 0.3" "500" ;
+			transition "StatusText::forecolor" "1 0.01 0.01 0" "1 0.01 0.01 0.7" "500" ;
+			transition "StatusBar3Mid1::rect" "53 27 87 52" "500" "53 27 135 52" "0.4" "0.5" ;
+			transition "StatusBar3Mid2::rect" "499 27 88 52" "500" "452 27 135 52" "0.4" "0.5" ;
+			transition "StatusBar3Mid1::matcolor" "0.6 0.8 0.7 0.3" "1 0.2 0 0.3" "500" ;
+			transition "StatusBar3Mid2::matcolor" "0.6 0.8 0.7 0.3" "1 0.2 0 0.3" "500" ;
+			transition "StatusBar3Left::matcolor" "0.6 0.8 0.7 0.3" "1 0.2 0 0.3" "500" ;
+			transition "StatusBar3Right::matcolor" "0.6 0.8 0.7 0.3" "1 0.2 0 0.3" "500" ;
+			
+			transition "Bar1Right::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;
+			transition "bar1Mid::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;
+			transition "bar1Left::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;			
+			transition "bar2Right::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;
+			transition "bar2Mid::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;
+			transition "bar2Left::matcolor" "0.7 0.8 0.85 0.3" "0.8 0.7 0.7 0.3" "500" ;			
+		}
+
+		onTime 400 {
+			transition "Logo2::matcolor" "0.6 1 0.8 0.9" "1 1 1 1" "300" ;
+		}
+
+		onTime 500 {
+			transition "Statusbar2Left::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;
+			transition "Statusbar2Mid::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;
+			transition "Statusbar2Right::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;			
+			
+			transition "Statusbar1Left::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;
+			transition "Statusbar1Mid::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;
+			transition "Statusbar1Right::matcolor" "0.7 0.8 0.85 0.3" "1 1 1 0.5" "400" ;
+		}
+
+		onTime 550 {
+			set "ContentsText::text" "#str_02322" ;
+			set "StatusText::text" "#str_00017" ;
+			transition "StatusText::forecolor" "0.6 1 0.8 0.6" "1 1 1 0.8" "400" ;
+		}
+
+	}
+	windowDef NewCombination
+	{
+		rect	0,0,1,1
+		visible	0
+		notime	1
+
+		onTime 100 {
+			if ("desktop::unlocked" == 0) {
+				set "ContentsText::text" "CHANGED" ;
+				set "desktop::new_comb" 0;
+				
+				set "TriggerButton0::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton1::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton2::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton3::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton4::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton5::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton6::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton7::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton8::matcolor" "1 1 1 0.1" ;
+				set "TriggerButton9::matcolor" "1 1 1 0.1" ;
+				
+				set "TriggerButton0::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton1::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton2::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton3::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton4::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton5::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton6::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton7::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton8::forecolor" "1 1 1 0.4" ;
+				set "TriggerButton9::forecolor" "1 1 1 0.4" ;				
+				
+				set "TriggerButton0::noevents" "0" ;
+				set "TriggerButton1::noevents" "0" ;
+				set "TriggerButton2::noevents" "0" ;
+				set "TriggerButton3::noevents" "0" ;
+				set "TriggerButton4::noevents" "0" ;
+				set "TriggerButton5::noevents" "0" ;
+				set "TriggerButton6::noevents" "0" ;
+				set "TriggerButton7::noevents" "0" ;
+				set "TriggerButton8::noevents" "0" ;
+				set "TriggerButton9::noevents" "0" ;
+				
+			}
+		}
+
+		onTime 1000 {
+			if ("desktop::unlocked" == 0) {
+				set "ContentsText::text" "RESET" ;
+			}
+		}
+
+	}
+	windowDef panels
+	{
+		rect	24,98,598,180
+		visible	0
+		windowDef panel0
+		{
+			rect	30,53,574,53
+			visible	1
+			forecolor	1,1,1,1
+			text	"Panel 1"
+			textscale	0.5
+		}
+		windowDef panel1
+		{
+			rect	29,79,561,48
+			visible	1
+			forecolor	1,1,1,1
+			text	"Panel 2"
+			textscale	0.5
+		}
+		windowDef panel2
+		{
+			rect	28,108,148,34
+			visible	1
+			forecolor	1,1,1,1
+			text	"Panel 3"
+			textscale	0.5
+		}
+		windowDef panel3
+		{
+			rect	27,137,131,34
+			visible	1
+			forecolor	1,1,1,1
+			text	"Panel 4"
+			textscale	0.5
+		}
+		windowDef panel0_ctrl
+		{
+			rect	511,67,39,23
+			visible	1
+			backcolor	1,0,0,1
+
+			onAction {
+				runScript "gui::gui_parm7";
+			}
+		}
+		windowDef panel1_ctrl
+		{
+			rect	511,94,39,23
+			visible	1
+			backcolor	1,0,0,1
+
+			onAction {
+				runScript "gui::gui_parm8";
+			}
+
+		}
+		windowDef panel2_ctrl
+		{
+			rect	511,121,39,23
+			visible	1
+			backcolor	1,0,0,1
+
+			onAction {
+				runScript "gui::gui_parm9";
+			}
+
+		}
+		windowDef panel3_ctrl
+		{
+			rect	511,148,39,25
+			visible	1
+			backcolor	1,0,0,1
+
+			onAction {
+				runScript "gui::gui_parm10";
+			}
+
+		}
+		windowDef holder
+		{
+			rect	31,25,574,29
+			visible	1
+			forecolor	1,1,1,1
+			text	"Holder"
+			textscale	0.5
+		}
+		windowDef holder_ctrl
+		{
+			rect	511,40,40,20
+			visible	1
+			backcolor 1,0,0,1
+
+			onAction {
+				runScript "gui::gui_parm6";
+			}
+		}
+		windowDef status_line
+		{
+			rect	33,-5,527,37
+			visible	1
+			forecolor	1,0.50196081,0.50196081,1
+			textscale	0.5
+		}
+		
+	}
+	windowDef terminal_power
+	{
+		rect	300,33,81,36
+		visible	1
+		forecolor	1,1,1,0.80000001
+		text	"100%"
+		textscale	0.60000002
+		textalign	1
+	}
+}

@@ -1,0 +1,66 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	
+	onEvent {
+		if( "gui::gui_parm4" != 0 ) {
+			if( "gui::gui_parm4" == 1 ) {
+				runScript "gui::gui_parm1" ;
+				set "status::text" "Installation successful";
+			} else if( "gui::gui_parm4" == 2 ) {
+				set "status::text" "Length error";
+			} else if( "gui::gui_parm4" == 3 ) {
+				set "status::text" "Port error";
+			} else if( "gui::gui_parm4" == 4 ) {
+				set "status::text" "Password is not numeric";
+			} else if( "gui::gui_parm4" == 5 ) {
+				set "status::text" "Motherboard already installed";
+			} else if( "gui::gui_parm4" == 6 ) {
+				runScript "gui::gui_parm2" ;
+				set "status::text" "Motherboard uninstalled";
+			}
+			set "gui::gui_parm4" "0";
+		}
+	}
+	
+	windowDef plug
+	{
+		rect	108,171,582,88
+		visible	1
+		forecolor	1,0,0,1
+		text	"PLUG"
+		textscale	1
+
+		onAction {
+			set "cmd" "installSolarMB" ;
+		}
+	}
+	windowDef unplug
+	{
+		rect	106,252,309,100
+		visible	1
+		forecolor	1,0,0,1
+		text	"UNPLUG"
+		textscale	1
+				
+		onAction {
+			set "cmd" "uninstallSolarMB" ;
+		}	
+	}
+	windowDef motherboard
+	{
+		rect	50,79,548,67
+		visible	1
+		forecolor	1,1,1,1
+		text	"Motherboard"
+		textscale	1
+	}
+	windowDef status
+	{
+		rect	48,353,614,68
+		visible	1
+		forecolor	1,0.50196081,0.50196081,1
+		text	""
+		textscale	0.69999999
+	}
+}

@@ -1,0 +1,82 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	visible	1
+	
+	onEvent {
+		if( "gui::gui_parm1" == 2 ) {
+			set "status::text" "empty inventory";
+		}
+	}
+	
+	windowDef programmb
+	{
+		rect	34,32,580,90
+		visible	1
+		forecolor	1,0,0,1
+		text	"Program Motherboard"
+		textscale	1
+
+		onAction {
+			set "cmd" "terminalactive" ;
+			/*
+			set "programmb::visible" "0" ;
+			set "submit::visible" "1" ;
+			set "code::visible" "1" ;
+			set "back::visible" "1" ;
+			setFocus "code" ;
+			*/
+		}
+
+	}
+	windowDef status
+	{
+		rect	26,401,590,64
+		visible	1
+		forecolor	1,0.50196081,0.50196081,1
+		text	"status"
+		textscale	1
+		textalign	1
+	}
+	editDef code
+	{
+		rect	34,25,580,274
+		visible	0
+		backcolor	0.25098041,0,0,1
+		wrap	1
+		forecolor	1,1,1,1
+		text	"gui::gui_parm0"
+		textscale	1
+	}
+	windowDef submit
+	{
+		rect	223,327,414,58
+		visible	0
+		forecolor	1,0,0,1
+		text	"Submit Changes"
+		textscale	1
+		textalign	1
+
+		onAction {
+			set "cmd" "programSolarMB" ;
+		}
+
+	}
+	windowDef back
+	{
+		rect	9,330,132,62
+		visible	0
+		forecolor	1,0,0,1
+		text	"Back"
+		textscale	1
+
+		onAction {
+			set "programmb::visible" "1" ;
+			set "submit::visible" "0" ;
+			set "code::visible" "0" ;
+			set "back::visible" "0" ;
+			set "code::text" "" ;
+		}
+
+	}
+}

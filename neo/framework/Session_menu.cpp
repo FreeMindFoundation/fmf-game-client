@@ -1134,6 +1134,8 @@ void idSessionLocal::DispatchCommand( idUserInterface *gui, const char *menuComm
 		gui = guiActive;
 	}
 
+	common->Printf( "DispatchCommand\n" ); 
+
 	if ( gui == guiMainMenu ) {
 		HandleMainMenuCommands( menuCommand );
 		return;
@@ -1145,7 +1147,7 @@ void idSessionLocal::DispatchCommand( idUserInterface *gui, const char *menuComm
 		HandleNoteCommands( menuCommand );
 	} else if ( gui == guiRestartMenu ) {
 		HandleRestartMenuCommands( menuCommand );
-	} else if ( game && guiActive && guiActive->State().GetBool( "gameDraw" ) ) {
+	} else if ( game && guiActive /* && guiActive->State().GetBool( "gameDraw" ) */ ) {
 		const char *cmd = game->HandleGuiCommands( menuCommand );
 		if ( !cmd ) {
 			guiActive = NULL;

@@ -1,0 +1,57 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	visible	1
+	menugui	1
+
+	onActivate {
+		setFocus "terminalcommand" ;
+	}
+	
+	onESC {
+		set "cmd" "close" ;
+	}
+	
+	windowDef MainWindow
+	{
+		rect	30,30,500,300
+		visible	1
+		bordersize	0.5
+		bordercolor	0,0,1,0.8
+		
+		editDef terminaloutput
+		{
+			rect	0,0,450,280
+			text	"gui::terminaltext"
+			textscale	0.25
+			forecolor	1, 1, 1, 1
+			backcolor	0,0,0,0.6
+			visible	1
+			font	"fonts/an"
+			wrap	1
+			readonly 1
+			textalign	0
+			showcursor  1
+			maxchars	2048
+			forceScroll 1
+		}
+		
+		editDef terminalcommand
+		{
+			rect	0,280,450,20
+			text	"gui::terminalcmd"
+			maxchars	80
+			textscale	0.25
+			textalign	0
+			forecolor	1, 1, 1, 1
+			backcolor	0,0,0,0.6
+			font	"fonts/an"
+			visible	1
+			
+			onEnterRelease {
+				set "cmd" "terminalmsg" ;
+			}
+		}
+	}
+}

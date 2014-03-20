@@ -1391,6 +1391,7 @@ idStaticEntity::Spawn
 void idStaticEntity::Spawn( void ) {
 	bool solid;
 	bool hidden;
+	bool gameDraw;
 
 	// an inline static model will not do anything at all
 	if ( spawnArgs.GetBool( "inline" ) || gameLocal.world->spawnArgs.GetBool( "inlineAllStatics" ) ) {
@@ -1425,6 +1426,11 @@ void idStaticEntity::Spawn( void ) {
 	runGui = spawnArgs.GetBool( "runGui" );
 	if ( runGui ) {
 		BecomeActive( TH_THINK );
+	}
+
+	gameDraw = spawnArgs.GetBool( "gameDraw" );
+	if( gameDraw ) {
+		renderEntity.gui[0]->SetStateBool( "gameDraw", true );
 	}
 }
 

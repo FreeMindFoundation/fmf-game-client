@@ -1787,10 +1787,14 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 		} else if (	!idStr::Icmp( cmd, "selectfile" ) ) {
 			TerminalFiles( currentGui, 0 );
 			return "continue";
+		} else if (	!idStr::Icmp( cmd, "terminalactive" ) ) {
+			common->Printf( "terminalactive\n" );
+			TerminalMode_f( args );
 		} else if (	!idStr::Icmp( cmd, "submitfile" ) ) {
 			TerminalFiles( currentGui, 1 );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "terminalmsg" ) ) {
+			common->Printf( "terminalmsg\n" );
 			TerminalCmd( currentGui );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "readytoggle" ) ) {
@@ -1823,6 +1827,7 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 			DisableMenu();
 			return NULL;
 		} else if (	!idStr::Icmp( cmd, "voteyes" ) ) {
+			common->Printf( "voteyes\n" );
 			CastVote( gameLocal.localClientNum,	true );
 			DisableMenu();
 			return NULL;

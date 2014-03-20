@@ -1,0 +1,75 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	visible	1
+	menugui	1
+
+	onActivate {
+		setFocus "Content" ;
+	}
+	
+	onESC {
+		set "cmd" "close" ;
+	}
+	
+	windowDef MainWindow
+	{
+		rect	0,121,600,300
+		visible	1		
+		
+		windowDef MMCModsMenus {
+			rect		30, 0, 445, 90
+
+			listDef MMCLoadList {
+				rect	30, 0, 445, 90
+				foreColor	1, 1, 1, 1
+				bordercolor	0.3 ,0.52 ,0.5 ,0.5
+				textscale	0.25
+				backcolor	0, 1, 0, 0.1
+				listName	"filesList"
+				font		"fonts/an"
+				tabstops	"2, 125, 362"
+
+				onEnter {
+					set	"cmd" "selectfile" ;
+				}
+				
+				onAction {
+					set	"cmd" "selectfile" ;
+				}
+			}
+		}
+		
+		editDef Content
+				{					
+					text	"gui::file_content"
+					rect	30, 90, 445, 170
+					foreColor	1, 1, 1, 1
+					backcolor	0, 0, 1, 0.1
+					textscale	0.25
+					font		"fonts/micro"
+					wrap		1
+					textalign	0
+					visible		1
+					showcursor  1
+					maxchars	2048
+				}
+			
+		windowDef Submit
+		{
+				text		"Submit"
+				rect		30, 260, 445, 30
+				backcolor	0, 0, 0, 0.1
+				foreColor	1, 1, 1, 1
+				bordersize	1
+				bordercolor	0.4, 0.4, 0.4, 1
+				textscale	0.25
+				font		"fonts/bank"
+				
+				onAction {
+						set	"cmd" "submitfile" ;
+				} 
+		}		
+	}
+}

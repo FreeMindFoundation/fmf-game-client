@@ -4175,6 +4175,34 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 		return false;
 	}
 
+	
+	if ( token.Icmp( "programSolarMB" ) == 0 ) {
+		int inum;
+
+		inum = inventory.items.Num();
+
+		if( !entityGui->GetRenderEntity() || !entityGui->GetRenderEntity()->gui[ 0 ] ) {									return false;
+		}
+
+		if( inum < 1 ) {
+			entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm1", 2 );	// empty inventory
+		}
+
+		for ( j = 0; j < inum; j++ ) {
+			idStr cmd, pass;
+			idDict *item = inventory.items[ j ];
+			const char *iname = item->GetString( "inv_link" );
+			if( !iname ) {
+				continue;
+			}		
+
+			if( !idStr::Cmp( iname, "gp_board" ) ) {		
+				common->Printf( "state str: %s\n", entityGui->GetRenderEntity()->gui[ 0 ]->GetStateString( "gui_parm0" ) );
+				item->Set( "inv_sourcecode", entityGui->GetRenderEntity()->gui[ 0 ]->GetStateString( "gui_parm0" ) );
+			}
+		}
+	}
+
 	if ( token.Icmp( "uninstallSolarMB" ) == 0 ) {
 			for ( j = 0; j < entityGui->guiItems.Num(); j++ ) {
 				//this should always be a MB
@@ -4221,7 +4249,7 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 3 );	// error port
 					return false;
 				}
-				entityGui->GetRenderEntity()->gui[ 0 ]->IsInteractive();
+				
 				pass = cmd.Mid( 4, 3 );
 				if( !pass.IsNumeric() ) {
 					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 4 );	// error pass !numeric
@@ -4602,7 +4630,7 @@ void idPlayer::UpdateFocus( void ) {
 			ev = sys->GenerateMouseMoveEvent( -2000, -2000 );
 			command = focusUI->HandleEvent( &ev, gameLocal.time );
  			HandleGuiCommands( focusGUIent, command );
-
+			
 			// move to an absolute position
 			ev = sys->GenerateMouseMoveEvent( pt.x * SCREEN_WIDTH, pt.y * SCREEN_HEIGHT );
 			command = focusUI->HandleEvent( &ev, gameLocal.time );

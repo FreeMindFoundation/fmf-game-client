@@ -27,31 +27,52 @@ namespace map_test2 {
 		tmp2 = $solar_panel_terminal.getGuiParm( "gui_parm3" );	
 	}
 	
+	void logout() {
+		$solar_panel_terminal.setGuiParm( "gui_parm6" , 3 );
+	}
+	
+	void uninstall_mb() {
+		active_holder = 0;
+		active_panel0 = 0;
+		active_panel1 = 0;
+		active_panel2 = 0;
+		active_panel3 = 0;
+		$solar_panel_terminal.setGuiParm( "gui_parm6" , 4 );
+	}
+	
+	void install_mb() {
+		string cmd;
+		
+		cmd = $solar_panel_mb.getGuiParm( "gui_parm5" );
+		
+		tmp0 = sys.strMid( cmd, 0, 1 );
+		tmp1 = sys.strMid( cmd, 1, 1 );
+		tmp2 = sys.strMid( cmd, 2, 1 );
+		
+		$solar_panel_terminal.setGuiParm( "gui_parm6" , 5 );
+	}
+	
 	void verify_pass() {
-		/*
 		if( $solar_panel_terminal.getGuiParm( "gui_parm1" ) == tmp0 && $solar_panel_terminal.getGuiParm( "gui_parm2" ) == tmp1 && $solar_panel_terminal.getGuiParm( "gui_parm3" ) == tmp2 ) {
-			//$solar_panel_terminal.setGuiParm( "gui_parm17" , 1);
-			$solar_panel_terminal.setGuiParm( "networkState" , 11);
+			$solar_panel_terminal.setGuiParm( "gui_parm6" , 1 );	
 			sys.print( "verify_pass ok\n" );
 		} else {
-			//$solar_panel_terminal.setGuiParm( "gui_parm17" , 2);
-			$solar_panel_terminal.setGuiParm( "networkState" , 12);
+			$solar_panel_terminal.setGuiParm( "ns0f" , 1 );	// force
+			$solar_panel_terminal.setGuiParm( "gui_parm6" , 2 );
 			sys.print( "verify_pass not ok " + $solar_panel_terminal.getGuiParm( "gui_parm1" ) + $solar_panel_terminal.getGuiParm( "gui_parm2" ) + $solar_panel_terminal.getGuiParm( "gui_parm3" ) + "\n" );
+			
 		}
-		*/
-		sys.print( "values: " + $solar_panel_terminal.getGuiParm( "gui_parm1" ) + $solar_panel_terminal.getGuiParm( "gui_parm2" ) + $solar_panel_terminal.getGuiParm( "gui_parm3" ) + "\n" );
-		$solar_panel_terminal.setGuiParm( "networkState" , 1);
 	}
 	
 	void func_holder() {
 		if( active_holder == 1 ) {
 			sys.print( "func_holder 1 \n" );
 			active_holder = 0;	
-			$solar_panel_terminal.setGuiParm( "networkState" , 2);			
+			$solar_panel_terminal.setGuiParm( "gui_parm12" , 2 );			
 		} else {
 			sys.print( "func_holder 0 \n" );
 			active_holder = 1;
-			$solar_panel_terminal.setGuiParm( "networkState" , 1);			
+			$solar_panel_terminal.setGuiParm( "gui_parm12" , 1 );			
 		}
 	}
 	
@@ -59,12 +80,12 @@ namespace map_test2 {
 		if( active_panel0 == 1 ) {
 			sys.print( "func_p0 1 \n" );
 			active_panel0 = 0;	
-			$solar_panel_terminal.setGuiParm( "networkState" , 4);
+			$solar_panel_terminal.setGuiParm( "gui_parm13" , 2 );	
 			$light_p0_0.setColor(1, 0, 0);
 		} else {
 			sys.print( "func_p0 0\n" );
 			active_panel0 = 1;
-			$solar_panel_terminal.setGuiParm( "networkState" , 3);
+			$solar_panel_terminal.setGuiParm( "gui_parm13" , 1 );	
 			$light_p0_0.setColor(0, 1, 0);
 		}
 	}
@@ -72,11 +93,11 @@ namespace map_test2 {
 	void func_p1() {
 		if( active_panel1 == 1 ) {
 			active_panel1 = 0;	
-			$solar_panel_terminal.setGuiParm( "networkState" , 6);
+			$solar_panel_terminal.setGuiParm( "gui_parm14" , 2 );		
 			$light_p0_1.setColor(1, 0, 0);
 		} else {
 			active_panel1 = 1;
-			$solar_panel_terminal.setGuiParm( "networkState" , 5);
+			$solar_panel_terminal.setGuiParm( "gui_parm14" , 1 );		
 			$light_p0_1.setColor(0, 1, 0);
 		}
 	}	
@@ -84,11 +105,11 @@ namespace map_test2 {
 	void func_p2() {
 		if( active_panel2 == 1 ) {
 			active_panel2 = 0;	
-			$solar_panel_terminal.setGuiParm( "networkState" , 8);
+			$solar_panel_terminal.setGuiParm( "gui_parm15" , 2 );	
 			$light_p0_2.setColor(1, 0, 0);
 		} else {
 			active_panel2 = 1;
-			$solar_panel_terminal.setGuiParm( "networkState" , 7);
+			$solar_panel_terminal.setGuiParm( "gui_parm15" , 1 );			
 			$light_p0_2.setColor(0, 1, 0);
 		}
 	}
@@ -96,11 +117,11 @@ namespace map_test2 {
 	void func_p3() {
 		if( active_panel3 == 1 ) {
 			active_panel3 = 0;	
-			$solar_panel_terminal.setGuiParm( "networkState" , 10);
+			$solar_panel_terminal.setGuiParm( "gui_parm16" , 2 );	
 			$light_p0_3.setColor(1, 0, 0);
 		} else {
 			active_panel3 = 1;
-			$solar_panel_terminal.setGuiParm( "networkState" , 9);
+			$solar_panel_terminal.setGuiParm( "gui_parm16" , 1 );	
 			$light_p0_3.setColor(0, 1, 0);
 		}
 	}	
