@@ -567,9 +567,7 @@ void idConsoleLocal::KeyDownEvent( int key ) {
 	
 	// Execute F key bindings
 	if ( key >= K_F1 && key <= K_F12 ) {
-		idKeyInput::ExecKeyBinding( key );
-		return;
-	}
+ 	}
 
 	// ctrl-L clears screen
 	if ( key == 'l' && idKeyInput::IsDown( K_CTRL ) ) {

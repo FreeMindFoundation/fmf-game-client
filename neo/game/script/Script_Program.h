@@ -62,7 +62,7 @@ private:
 public:
 	const idEventDef	*eventdef;
 	idVarDef			*def;
-	const idTypeDef		*type;
+	/*const*/ idTypeDef	*type;
 	int 				firstStatement;
 	int 				numStatements;
 	int 				parmTotal;

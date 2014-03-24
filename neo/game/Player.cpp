@@ -4238,8 +4238,7 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 			if( !idStr::Cmp( iname, "gp_board" ) ) {			
 				if( !entityGui->GetRenderEntity() || !entityGui->GetRenderEntity()->gui[ 0 ] ) {									return false;
 				}
-				cmd = "P05 234";
-				common->Printf( "gp_board\n" );
+				cmd = "P05 234";//item->GetString( "inv_sourcecode" );
 				if( cmd.Length() != 7 ) {
 					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 2 );	// error length
 					return false;
@@ -4563,6 +4562,9 @@ void idPlayer::UpdateFocus( void ) {
 
 		pt = gameRenderWorld->GuiTrace( ent->GetModelDefHandle(), start, end );
 		if ( pt.x != -1 ) {
+			//ev = sys->GenerateMouseButtonEvent( K_MOUSE1, true );
+
+
 			// we have a hit
 			renderEntity_t *focusGUIrenderEntity = ent->GetRenderEntity();
 			if ( !focusGUIrenderEntity ) {
@@ -4626,7 +4628,7 @@ void idPlayer::UpdateFocus( void ) {
 				}
 			}
 
-			// clamp the mouse to the corner
+			// clamp the mouse to the corner_forward
 			ev = sys->GenerateMouseMoveEvent( -2000, -2000 );
 			command = focusUI->HandleEvent( &ev, gameLocal.time );
  			HandleGuiCommands( focusGUIent, command );

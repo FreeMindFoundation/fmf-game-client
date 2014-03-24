@@ -170,6 +170,7 @@ public:
 	static void		DropWeapon_f( const idCmdArgs &args );
 	static void		MessageMode_f( const idCmdArgs &args );
 	static void		FilesMode_f( const idCmdArgs &args );
+	static void		ItemsMode_f( const idCmdArgs &args );
 	static void		TerminalMode_f( const idCmdArgs &args );
 	static void		VoiceChat_f( const idCmdArgs &args );
 	static void		VoiceChatTeam_f( const idCmdArgs &args );
@@ -225,6 +226,7 @@ public:
 
 	void			TerminalCmd( idUserInterface *gui );
 	void			TerminalFiles( idUserInterface *gui, const int type );
+	void			TerminalItems( idUserInterface *gui, const int type );
 
 	void			ClearFrags( int clientNum );
 
@@ -289,6 +291,7 @@ private:
 	idListGUI		*mapList;
 	idUserInterface *msgmodeGui;			// message mode
 	idUserInterface *filesGui;
+	idUserInterface *itemsGui;
 	idUserInterface *terminalGui;
 	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui, 4 - terminal
 	int				nextMenu;				// if 0, will do mainGui
@@ -351,6 +354,7 @@ private:
 	void			CheckAbortGame( void );
 	void			MessageMode( const idCmdArgs &args );
 	void			FilesMode( const idCmdArgs &args );
+	void			ItemsMode( const idCmdArgs &args );
 	void			TerminalMode( const idCmdArgs &args );
 	void			DisableMenu( void );
 	void			SetMapShot( void );

@@ -144,6 +144,7 @@ enum {
 	OP_USUB_V,
 	OP_UAND_F,
 	OP_UOR_F,
+	OP_UXOR_F,
 
 	OP_NOT_BOOL,
 	OP_NOT_F,
@@ -187,6 +188,7 @@ enum {
 	
 	OP_BITAND,
 	OP_BITOR,
+	OP_BITXOR,
 
 	OP_BREAK,			// placeholder op.  not used in final code
 	OP_CONTINUE,		// placeholder op.  not used in final code

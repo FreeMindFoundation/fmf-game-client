@@ -934,6 +934,9 @@ Sys_PollKeyboardInputEvents
 int Sys_ReturnKeyboardInputEvent( const int n, int &ch, bool &state ) {
 	ch = IN_DIMapKey( polled_didod[ n ].dwOfs );
 	state = (polled_didod[ n ].dwData & 0x80) == 0x80;
+
+	
+
 	if ( ch == K_PRINT_SCR || ch == K_CTRL || ch == K_ALT || ch == K_RIGHT_ALT ) {
 		// for windows, add a keydown event for print screen here, since
 		// windows doesn't send keydown events to the WndProc for this key.
@@ -941,6 +944,7 @@ int Sys_ReturnKeyboardInputEvent( const int n, int &ch, bool &state ) {
 		// alt messages when the right-alt is pressed on non-US 102 keyboards.
 		Sys_QueEvent( GetTickCount(), SE_KEY, ch, state, 0, NULL );
 	}
+	//common->Printf( "Sys_ReturnKeyboardInputEvent %d\n", ch );
 	return ch;
 }
 

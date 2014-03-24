@@ -3395,10 +3395,19 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 						}
 						token2 += "::" + token3;
 					}
-					const function_t *func = gameLocal.program.FindFunction( token2 );
+					
+					if ( !src.ReadToken( &token4 ) ) {
+						common->Printf( "handleguicommands token4 : [%s]\n", token4.c_str() );
+					}
+					common->Printf( "handleguicommands token2 : [%s]\n", token2.c_str() );
+					
+					/*const */function_t *func = gameLocal.program.FindFunction( token2 );
+					idTypeDef *parm = &type_float;
+
 					if ( !func ) {
 						gameLocal.Error( "Can't find function '%s' for gui in entity '%s'", token2.c_str(), entityGui->name.c_str() );
 					} else {
+						func->type->AddFunctionParm( parm, "5" );
 						idThread *thread = new idThread( func );
 						thread->DelayedStart( 0 );
 					}
@@ -4760,7 +4769,6 @@ void idEntity::ReadGUIFromSnapshot( const idBitMsgDelta &msg ) {
 				gui->SetStateInt( name.c_str(), state );
 				
 				gui->HandleNamedEvent( name.c_str() );
-				common->Printf( "gui read: %s state:  [%d]\n", name.c_str(), state );
 			}
 		}
 	} else {

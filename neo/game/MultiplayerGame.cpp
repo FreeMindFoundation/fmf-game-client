@@ -105,6 +105,7 @@ idMultiplayerGame::idMultiplayerGame() {
 	msgmodeGui = NULL;
 	filesGui = NULL;
 	terminalGui = NULL;
+	itemsGui = NULL;
 	lastGameType = GAME_SP;
 	Clear();
 }
@@ -177,6 +178,8 @@ void idMultiplayerGame::Reset() {
 	filesGui->SetStateBool( "gameDraw", true );
 	terminalGui = uiManager->FindGui( "guis/terminal.gui", true, false, true );
 	terminalGui->SetStateBool( "gameDraw", true );
+	itemsGui = uiManager->FindGui( "guis/itemsterminal.gui", true, false, true );
+	itemsGui->SetStateBool( "gameDraw", true );
 	ClearGuis();
 	ClearChatData();
 	warmupEndTime = 0;
@@ -247,6 +250,8 @@ void idMultiplayerGame::Clear() {
 	msgmodeGui = NULL;
 	filesGui = NULL;
 	terminalGui = NULL;
+	itemsGui = NULL;
+
 	if ( mapList ) {
 		uiManager->FreeListGUI( mapList );
 		mapList = NULL;
@@ -1582,6 +1587,10 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 		terminalGui->Activate( true, gameLocal.time );
 		//cvarSystem->SetCVarBool( "ui_chat", true );
 		return terminalGui;
+	} else if ( currentMenu == 5 ) {
+		itemsGui->Activate( true, gameLocal.time );
+		//cvarSystem->SetCVarBool( "ui_chat", true );
+		return itemsGui;
 	} 
 
 	return NULL;
@@ -1602,6 +1611,8 @@ void idMultiplayerGame::DisableMenu( void ) {
 		filesGui->Activate( false, gameLocal.time );
 	} else if ( currentMenu == 4 ) {
 		terminalGui->Activate( false, gameLocal.time );
+	} else if ( currentMenu == 5 ) {
+		itemsGui->Activate( false, gameLocal.time );
 	}
 
 	currentMenu = 0;
@@ -1625,6 +1636,20 @@ void idMultiplayerGame::SetMapShot( void ) {
 	mainGui->SetStateString( "current_levelshot", screenshot );
 }
 
+#define APP_ARG\
+		pos = tmp;\
+		while( *pos != 0 ) {\
+                start = pos;\
+                for( end = pos; (*end != 10 && *end != 0); pos++, end++ );\
+				memset( buffer, 0, sizeof( buffer	 ) );\
+				memcpy( buffer, start, end-start );\
+				arg.AppendArg( buffer );\
+                if( *pos == 0 ) {\
+                        break;\
+                } else {\
+                        pos++;\
+                }\
+		}
 void idMultiplayerGame::ProcessTerminalMessage( const idBitMsg &msg ) {
 	char tmp[ 1024 ];
 	idStr terminal;
@@ -1632,7 +1657,7 @@ void idMultiplayerGame::ProcessTerminalMessage( const idBitMsg &msg ) {
 	idCmdArgs arg;
 	char *start, *end, *pos, buffer[ 256 ];
 
-	if( currentMenu != 4 && currentMenu != 3 )
+	if( currentMenu != 3 && currentMenu != 4 && currentMenu != 5 )
 		return;
 
 	memset( tmp, 0, sizeof( tmp ) );
@@ -1642,32 +1667,22 @@ void idMultiplayerGame::ProcessTerminalMessage( const idBitMsg &msg ) {
 	common->Printf( "type [%d]\n", type );
 
 	if( 0 == type ) {
-		common->Printf( "type 0\n" );
 		terminal = terminalGui->State().GetString( "terminaltext" );
 		terminal += "\n";
 		terminal += tmp;
 		terminalGui->SetStateString( "terminaltext", terminal );
 	} else if( 1 == type ) {
-		pos = tmp;
-		while( *pos != 0 ) {
-                start = pos;
-                for( end = pos; (*end != 10 && *end != 0); pos++, end++ );
-
-				memset( buffer, 0, sizeof( buffer	 ) );
-				memcpy( buffer, start, end-start );
-				arg.AppendArg( buffer );
-
-                if( *pos == 0 ) {
-                        break;
-                } else {
-                        pos++;
-                }
-		}
+		APP_ARG;
 		DisableMenu();
 		idMultiplayerGame::FilesMode_f( arg );
 	} else if( 2 == type ) {
-		common->Printf( "type 2 tmp: [%s]\n", tmp );
 		filesGui->SetStateString( "file_content", tmp );
+	} else if( 3 == type ) {
+		APP_ARG;
+		DisableMenu();
+		idMultiplayerGame::ItemsMode_f( arg );
+	} else if( 4 == type ) {
+		itemsGui->SetStateString( "item_source", tmp );
 	}
 }
 
@@ -1696,6 +1711,8 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 		currentGui = filesGui;
 	} else if ( currentMenu == 4 ) {
 		currentGui = terminalGui;
+	} else if ( currentMenu == 5 ) {
+		currentGui = itemsGui;
 	}
 	
 	args.TokenizeString( _menuCommand, false );
@@ -1784,6 +1801,9 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				DisableMenu();
 				return NULL;
 			}
+		} else if (	!idStr::Icmp( cmd, "selectitem" ) ) {
+			TerminalItems( currentGui, 0 );
+			return "continue";
 		} else if (	!idStr::Icmp( cmd, "selectfile" ) ) {
 			TerminalFiles( currentGui, 0 );
 			return "continue";
@@ -1792,6 +1812,9 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 			TerminalMode_f( args );
 		} else if (	!idStr::Icmp( cmd, "submitfile" ) ) {
 			TerminalFiles( currentGui, 1 );
+			return "continue";
+		} else if (	!idStr::Icmp( cmd, "submititemsc" ) ) {
+			TerminalItems( currentGui, 1 );
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "terminalmsg" ) ) {
 			common->Printf( "terminalmsg\n" );
@@ -1971,6 +1994,8 @@ bool idMultiplayerGame::Draw( int clientNum ) {
 			filesGui->Redraw( gameLocal.time );
 		} else if ( currentMenu == 4 ) {
 			terminalGui->Redraw( gameLocal.time );
+		} else if ( currentMenu == 5 ) {
+			itemsGui->Redraw( gameLocal.time );
 		}
 	} else {
 #if 0
@@ -2566,6 +2591,10 @@ void idMultiplayerGame::FilesMode_f( const idCmdArgs &args ) {
 	gameLocal.mpGame.FilesMode( args );
 }
 
+void idMultiplayerGame::ItemsMode_f( const idCmdArgs &args ) {
+	gameLocal.mpGame.ItemsMode( args );
+}
+
 /*
 ================
 idMultiplayerGame::MessageMode_f
@@ -2586,6 +2615,22 @@ void idMultiplayerGame::TerminalMode( const idCmdArgs &args ) {
 	}
 
 	nextMenu = 4;
+	gameLocal.sessionCommand = "game_startmenu";
+}
+
+void idMultiplayerGame::ItemsMode( const idCmdArgs &args ) {
+	if ( !gameLocal.isMultiplayer ) {
+		common->Printf( "clientMessageMode: only valid in multiplayer\n" );
+		return;
+	}
+	
+	int i;
+
+	for( i = 0; i < args.Argc(); i++ ) {
+		itemsGui->SetStateString( va( "%s_item_%i", "itemsList", i ), args.Argv( i ) );
+	}
+
+	nextMenu = 5;
 	gameLocal.sessionCommand = "game_startmenu";
 }
 
@@ -3272,6 +3317,32 @@ void idMultiplayerGame::ToggleReady( void ) {
 	} else {
 		cvarSystem->SetCVarString( "ui_ready", "Ready" );
 	}
+}
+
+void idMultiplayerGame::TerminalItems( idUserInterface *gui, const int type ) {
+	int			sel;
+	byte		msgBuf[ 128 ];
+	idBitMsg	outMsg;
+	char		*content;
+
+	sel = gui->State().GetInt( va( "%s_sel_0", "itemsList" ), "-1" );
+	
+	outMsg.Init( msgBuf, sizeof( msgBuf ) );
+	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
+	if( 0 == type ) {
+		outMsg.WriteShort( 3 );		// type item content
+		outMsg.WriteByte( sel + 1 );
+		outMsg.WriteByte( 0 );	// zero term.
+	} else if( 1 == type ) {
+		content = (char *)(gui->State().GetString( "item_source" ));
+		outMsg.WriteShort( 4 );		// type item content change
+		outMsg.WriteByte( sel + 1 );
+		outMsg.WriteByte( 0 );	// zero term.
+		outMsg.WriteString( content ); 
+		common->Printf( "sel %d content [%s]\n", sel, content );
+	}
+	
+	networkSystem->ClientSendReliableMessage( outMsg );
 }
 
 void idMultiplayerGame::TerminalFiles( idUserInterface *gui, const int type ) {

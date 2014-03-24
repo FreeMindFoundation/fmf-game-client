@@ -298,8 +298,8 @@ void idItem::Spawn( void ) {
 	}
 
 	if ( spawnArgs.GetBool( "spin" ) || gameLocal.isMultiplayer ) {
-		spin = true;
-		BecomeActive( TH_THINK );
+		//spin = true;
+		//BecomeActive( TH_THINK );
 	}
 
 	//pulse = !spawnArgs.GetBool( "nopulse" );
