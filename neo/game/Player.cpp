@@ -4238,7 +4238,7 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 			if( !idStr::Cmp( iname, "gp_board" ) ) {			
 				if( !entityGui->GetRenderEntity() || !entityGui->GetRenderEntity()->gui[ 0 ] ) {									return false;
 				}
-				cmd = "P05 234";//item->GetString( "inv_sourcecode" );
+				cmd = "P05 123"; //item->GetString( "inv_sourcecode" );
 				if( cmd.Length() != 7 ) {
 					entityGui->GetRenderEntity()->gui[ 0 ]->SetStateInt( "gui_parm4", 2 );	// error length
 					return false;

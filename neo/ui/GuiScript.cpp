@@ -115,11 +115,9 @@ void Script_RunScript(idWindow *window, idList<idGSWinVar> *src) {
 		str += " ";
 		if( parm1 ) {
 			str += parm1->c_str();
-		}
+		}	
 		window->cmd = str;
-		common->Printf( "window cmd [%s]; parm [%s] parm1 [%s]\n", window->cmd.c_str(), parm->c_str(), parm1->c_str() );
 	}
-	
 }
 
 /*
@@ -260,7 +258,7 @@ guiCommandDef_t commandList[] = {
 	{ "resetCinematics", Script_ResetCinematics, 0, 2 },
 	{ "transition", Script_Transition, 4, 6 },
 	{ "localSound", Script_LocalSound, 1, 1 },
-	{ "runScript", Script_RunScript, 1, 2 },
+	{ "runScript", Script_RunScript, 1, 2 },	// just one more param for now
 	{ "evalRegs", Script_EvalRegs, 0, 0 }
 };
 

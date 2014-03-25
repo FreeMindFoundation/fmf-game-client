@@ -44,8 +44,8 @@ private:
 	int 				callStackDepth;
 	int 				maxStackDepth;
 
-	byte				localstack[ LOCALSTACK_SIZE ];
-	int 				localstackUsed;
+	
+	
 	int 				localstackBase;
 	int 				maxLocalstackUsed;
 
@@ -75,6 +75,10 @@ private:
 	void				CallSysEvent( const function_t *func, int argsize );
 
 public:
+	// temp private
+	int 				localstackUsed;
+	byte				localstack[ LOCALSTACK_SIZE ];
+
 	bool				doneProcessing;
 	bool				threadDying;
 	bool				terminateOnExit;
@@ -107,6 +111,8 @@ public:
 
 	bool				Execute( void );
 	void				Reset( void );
+
+	void				CallEvent1( const function_t *func, int argsize );
 
 	bool				GetRegisterValue( const char *name, idStr &out, int scopeDepth );
 	int					GetCallstackDepth( void ) const;

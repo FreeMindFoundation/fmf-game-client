@@ -675,6 +675,10 @@ void idInterpreter::LeaveFunction( idVarDef *returnDef ) {
 	}
 }
 
+void idInterpreter::CallEvent1( const function_t *func, int argsize ) {
+	CallEvent( func, argsize );
+}
+
 /*
 ================
 idInterpreter::CallEvent
