@@ -17,30 +17,36 @@ windowDef Desktop
 		if( "gui::gui_parm6" > 0 ) {
 			if( "gui::gui_parm6" == 1 ) {
 				set "ns0" "1";
-				set "AAAAA::visible" "1" ;
+				set "Controls::visible" "1" ;				
+				set "logout::visible" "1" ;
 				set "Keypad::visible" "0" ;			
-				set "Desktop::unlocked" "1"
+				set "Desktop::unlocked" "1";
+				set "MBRequired::visible" "0" ;
 			} else if( "gui::gui_parm6" == 2 ) {
-				set "ns0" "2";
-				set "desktop::count" "0";
+				set "ns0" "2";				
 				transition "KeypadText::forecolor" "1 1 1 0" "1 1 1 0.6" "1000" "1" "0" ;
 				transition "KeypadText1::forecolor" "1 0.1 0.1 0.9" "1 0.1 0.1 0" "1000" "1" "0" ;
 				set	"cmd" "play guisounds_error" ;
 			} else if( "gui::gui_parm6" == 3 ) {
 				set "ns0" "3";
+				set "MBRequired::visible" "0" ;
 				set "Keypad::visible" "1" ;
-				set "AAAAA::visible" "0" ;
-				set "Desktop::unlocked" "0"			
-			} else if( "gui::gui_parm6" == 4 ) {
-				set "ns0" "4";
+				set "Controls::visible" "0" ;
+				set "Desktop::unlocked" "0"	;
+				set "logout::visible" "0" ;				
+			} else if( "gui::gui_parm6" == 4 ) {			
+				set "ns0" "4";		
 				set "Keypad::visible" "0" ;
-				set "AAAAA::visible" "0" ;
-				set "Desktop::unlocked" "0"			
-				set "MBRequired::visible" "1" ;
+				set "Controls::visible" "0" ;
+				set "Desktop::unlocked" "0"	;		
+				set "MBRequired::visible" "1" ;	
+				set "logout::visible" "0" ;				
 			} else if( "gui::gui_parm6" == 5 ) {
 				set "ns0" "5";
 				set "Keypad::visible" "1" ;		
 				set "MBRequired::visible" "0" ;
+				set "logout::visible" "0" ;	
+				set "Controls::visible" "0" ;				
 			}
 			
 			set "gui::gui_parm6" "0";		
@@ -119,26 +125,32 @@ windowDef Desktop
 
 	onNamedEvent ns0 {
 		if( "gui::ns0" == 1 ) {
-			set "AAAAA::visible" "1" ;
+			set "Controls::visible" "1" ;
 			set "Keypad::visible" "0" ;
-			set "Desktop::unlocked" "1"
+			set "Desktop::unlocked" "1" ;
+			set "MBRequired::visible" "0" ;
+			set "logout::visible" "1" ;
 		} else if( "gui::ns0" == 2  ) {
 			transition "KeypadText::forecolor" "1 1 1 0" "1 1 1 0.6" "1000" "1" "0" ;
 			transition "KeypadText1::forecolor" "1 0.1 0.1 0.9" "1 0.1 0.1 0" "1000" "1" "0" ;
 			set	"cmd" "play guisounds_error" ;
-			set "desktop::count" "0";
 		} else if( "gui::ns0" == 3  ) {
+			set "MBRequired::visible" "0" ;
 			set "Keypad::visible" "1" ;
-			set "AAAAA::visible" "0" ;
-			set "Desktop::unlocked" "0"
+			set "Controls::visible" "0" ;
+			set "Desktop::unlocked" "0" ;
+			set "logout::visible" "0" ;	
 		} else if( "gui::ns0" == 4  ) { 
 			set "MBRequired::visible" "1" ;
 			set "Keypad::visible" "0" ;
-			set "AAAAA::visible" "0" ;
-			set "Desktop::unlocked" "0"			
+			set "Controls::visible" "0" ;
+			set "Desktop::unlocked" "0"	;
+			set "logout::visible" "0" ;	
 		} else if( "gui::ns0" == 5  ) { 
 			set "Keypad::visible" "1" ;		
 			set "MBRequired::visible" "0" ;
+			set "logout::visible" "0" ;	
+			set "Controls::visible" "0" ;				
 		}
 	}
 
@@ -191,14 +203,8 @@ windowDef Desktop
 			set	"status_line::text" "Panel 4 deactivated.";
 		}
 	}	
-
-	windowDef MBRequired {
-		rect	39,209,629,61
-		visible	1
-		forecolor	1,0,0,1
-		text	"Motherboard required"
-		textscale	1
-	}	
+	
+	*/
 	
 	windowDef Logo1
 	{
@@ -692,7 +698,7 @@ windowDef Desktop
 						set "matcolor" "0.6 0.8 1 0.4" ;
 						
 						EvalRegs;
-						runScript "gui::gui_parm20";										
+						runScript "gui::gui_parm20" "gui::gui_parm0";										
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "0";
 						set "desktop::count" "2";
@@ -743,7 +749,7 @@ windowDef Desktop
 						set "matcolor" "0.6 0.8 1 0.4" ;
 						
 						EvalRegs;
-						runScript "gui::gui_parm20";	
+						runScript "gui::gui_parm20" "gui::gui_parm0";	
 						
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "1";
@@ -796,7 +802,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "2";
 						set "desktop::count" "2";						
@@ -844,7 +850,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "3";
 						set "desktop::count" "2";						
@@ -891,7 +897,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "4";
 						set "desktop::count" "2";						
@@ -938,7 +944,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "5";
 						set "desktop::count" "2";						
@@ -985,7 +991,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "6";
 						set "desktop::count" "2";						
@@ -1032,7 +1038,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "7";
 						set "desktop::count" "2";						
@@ -1079,7 +1085,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "8";
 						set "desktop::count" "2";						
@@ -1126,7 +1132,7 @@ windowDef Desktop
 						set "desktop::count" "0";						
 						set "matcolor" "0.6 0.8 1 0.4" ;	
 						EvalRegs;
-						runScript "gui::gui_parm20";							
+						runScript "gui::gui_parm20" "gui::gui_parm0";							
 					} else if ("desktop::count" == 1) {
 						set "gui::gui_parm2" "9";
 						set "desktop::count" "2";						
@@ -1149,18 +1155,18 @@ windowDef Desktop
 		notime	1
 		visible	0
 
-		set "AAAAA::visible" "1" ;
+		set "Controls::visible" "1" ;
 		
 		onTime 0 {
 			set "bglow2::visible" "0" ;
 			set "bglow::visible" "1" ;
-			set "AAAAA::visible" "1" ;
+			set "Controls::visible" "1" ;
 			
 			
 			transition "Keypad::rect" "5 188 628 198" "5 392 628 0" "0"  ;
 			transition "Logo1::matcolor" "0.4 0 0 0.6" "0.1 0.5 0.4 0.5" "500" ;
 			transition "Contents::rect" "0 96 640 93" "0 272 640 93" "0" ;
-			//transition "AAAAA::rect" "0 400 598 180"	"24 98 598 180" "500";
+			//transition "Controls::rect" "0 400 598 180"	"24 98 598 180" "500";
 			transition "Contentsbg::matcolor" "0.4 0 0 0.3" "0.2 0.4 0.3 0.3" "500" ;
 			transition "StatusText::forecolor" "1 0.01 0.01 0.7" "1 0.01 0.01 0" "500" ;
 			transition "StatusBar3Mid1::rect" "53 27 135 52" "53 27 87 52" "500" "0.4" "0.5" ;
@@ -1257,7 +1263,7 @@ windowDef Desktop
 		visible	0
 		notime	1
 
-		set "AAAAA::visible" "0" ;
+		set "Controls::visible" "0" ;
 		set "Keypad::visible" "1" ;
 		//set "Contents::visible" "0" ;
 		
@@ -1266,12 +1272,12 @@ windowDef Desktop
 			
 			set "bglow2::visible" "1" ;
 			set "bglow::visible" "0" ;
-			set "AAAAA::visible" "0" ;
+			set "Controls::visible" "0" ;
 			
 			transition "Keypad::rect" "5 392 628 0" "5 188 628 198" "0" ;
 			transition "Logo1::matcolor" "0.1 0.5 0.4 0.5" "0.4 0 0 0.6" "500" ;
 			transition "Contents::rect" "0 272 640 93" "0 96 640 93" "0"  ;
-			//transition "AAAAA::rect" "24 98 598 180"	"0 400 598 180" "500"; 
+			//transition "Controls::rect" "24 98 598 180"	"0 400 598 180" "500"; 
 			transition "Contentsbg::matcolor" "0.2 0.4 0.3 0.3" "0.4 0 0 0.3" "500" ;
 			transition "StatusText::forecolor" "1 0.01 0.01 0" "1 0.01 0.01 0.7" "500" ;
 			transition "StatusBar3Mid1::rect" "53 27 87 52" "500" "53 27 135 52" "0.4" "0.5" ;
@@ -1315,7 +1321,7 @@ windowDef Desktop
 	}
 	*/
 
-	windowDef AAAAA
+	windowDef Controls
 	{
 		rect	24,98,598,180
 		visible	0
@@ -1358,7 +1364,7 @@ windowDef Desktop
 			backcolor	1,0,0,1
 
 			onAction {
-				runScript "gui::gui_parm7";
+				runScript "gui::gui_parm7" "gui::gui_parm0";
 			}
 
 		}
@@ -1369,7 +1375,7 @@ windowDef Desktop
 			backcolor	1,0,0,1
 
 			onAction {
-				runScript "gui::gui_parm8";
+				runScript "gui::gui_parm8" "gui::gui_parm0";
 			}
 
 		}
@@ -1380,7 +1386,7 @@ windowDef Desktop
 			backcolor	1,0,0,1
 
 			onAction {
-				runScript "gui::gui_parm9";
+				runScript "gui::gui_parm9" "gui::gui_parm0";
 			}
 
 		}
@@ -1391,7 +1397,7 @@ windowDef Desktop
 			backcolor	1,0,0,1
 
 			onAction {
-				runScript "gui::gui_parm10";
+				runScript "gui::gui_parm10" "gui::gui_parm0";
 			}
 
 		}
@@ -1410,7 +1416,7 @@ windowDef Desktop
 			backcolor	1,0,0,1
 
 			onAction {
-				runScript "gui::gui_parm11" ;
+				runScript "gui::gui_parm11" "gui::gui_parm0";
 			}
 
 		}
@@ -1431,13 +1437,29 @@ windowDef Desktop
 		text	"100%"
 		textscale	0.60000002
 		textalign	1
+	}	
 
-		onAction { 
-				if( "Desktop::unlocked" == 1 ) {
-					runScript "gui::gui_parm22" ;
-				} 
-			}
-
+	windowDef logout
+	{
+		rect	49,404,568,50
+		visible	0
+		forecolor	1,0.50196081,0.50196081,1
+		text	"LOGOUT"
+		textscale	1
+		textalign	1
+		onAction { 				
+			if( "Desktop::unlocked" == 1 ) {
+				runScript "gui::gui_parm22" "gui::gui_parm0";
+			} 
+		}
+	}	
+	
+	windowDef MBRequired {
+		rect	39,209,629,61
+		visible	1
+		forecolor	1,0,0,1
+		text	"Motherboard required"
+		textscale	1
 	}	
 }
-	
+		

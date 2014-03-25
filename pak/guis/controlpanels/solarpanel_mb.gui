@@ -5,22 +5,44 @@ windowDef Desktop
 	onEvent {
 		if( "gui::gui_parm4" != 0 ) {
 			if( "gui::gui_parm4" == 1 ) {
-				runScript "gui::gui_parm1" ;
+				set "ns0" "1";
+				runScript "gui::gui_parm1" "gui::gui_parm0";
 				set "status::text" "Installation successful";
 			} else if( "gui::gui_parm4" == 2 ) {
+				set "ns0" "2";
 				set "status::text" "Length error";
 			} else if( "gui::gui_parm4" == 3 ) {
+				set "ns0" "3";
 				set "status::text" "Port error";
 			} else if( "gui::gui_parm4" == 4 ) {
+				set "ns0" "4";
 				set "status::text" "Password is not numeric";
 			} else if( "gui::gui_parm4" == 5 ) {
+				set "ns0" "5";
 				set "status::text" "Motherboard already installed";
 			} else if( "gui::gui_parm4" == 6 ) {
-				runScript "gui::gui_parm2" ;
+				set "ns0" "6";
+				runScript "gui::gui_parm2" "gui::gui_parm0";
 				set "status::text" "Motherboard uninstalled";
 			}
 			set "gui::gui_parm4" "0";
 		}
+	}
+	
+	onNamedEvent ns0 {
+		if( "gui::ns0" == 1 ) {
+			set "status::text" "Installation successful";
+		} else if( "gui::ns0" == 2 ) {
+			set "status::text" "Length error";
+		} else if( "gui::ns0" == 3 ) {
+			set "status::text" "Port error";
+		} else if( "gui::ns0" == 4 ) {
+			set "status::text" "Password is not numeric";
+		} else if( "gui::ns0" == 5 ) {
+			set "status::text" "Motherboard already installed";
+		} else if( "gui::ns0" == 6 ) {
+			set "status::text" "Motherboard uninstalled";
+		} 
 	}
 	
 	windowDef plug
