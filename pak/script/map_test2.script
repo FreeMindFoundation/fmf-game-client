@@ -6,6 +6,19 @@ namespace map_test2 {
 
 	void solar_source() {
 		while( 1 ) {	
+		
+			$solar_holder.move( SOUTH, 4000 );
+			sys.waitFor( $solar_holder );
+			/*
+			$solar_holder.move( DOWN, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( UP, 300 );
+			sys.waitFor( $solar_holder );
+			*/
+			$solar_holder.move( NORTH, 4000 );
+			sys.waitFor( $solar_holder );
+			
 		/*
 			$solar_holder.move( DOWN, 300 );
 			sys.waitFor( $solar_holder );
@@ -24,31 +37,26 @@ namespace map_test2 {
 			
 			$solar_holder.move( EAST, 300 );
 			sys.waitFor( $solar_holder );	
-		*/
 		
-			$solar_holder.move( SOUTH, 300 );
-			sys.waitFor( $solar_holder );
-			
+		*/ /*
 			$solar_holder.move( WEST, 300 );
+			sys.waitFor( $solar_holder );
+			
+			$solar_holder.move( SOUTH, 300 );
 			sys.waitFor( $solar_holder );			
-			
-			$solar_holder.move( DOWN, 300 );
-			sys.waitFor( $solar_holder );
-			
-			$solar_holder.move( UP, 300 );
-			sys.waitFor( $solar_holder );	
-			
-			$solar_holder.move( NORTH, 300 );
-			sys.waitFor( $solar_holder );
 			
 			$solar_holder.move( EAST, 300 );
 			sys.waitFor( $solar_holder );
 			
+			$solar_holder.move( NORTH, 300 );
+			sys.waitFor( $solar_holder );
+			
 			$solar_holder.move( DOWN, 300 );
 			sys.waitFor( $solar_holder );
 			
 			$solar_holder.move( UP, 300 );
 			sys.waitFor( $solar_holder );	
+			*/
 		}
 	}
 	
@@ -58,7 +66,8 @@ namespace map_test2 {
 	
 		thread solar_source();
 		
-		thread move_holder();
+		thread move_holder( "1" );
+		thread move_holder( "2" );
 
 		thread airlock2_door2_open();
 	}

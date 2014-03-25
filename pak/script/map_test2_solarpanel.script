@@ -1,128 +1,241 @@
 namespace map_test2 {	
+	#define HOLDER_F	1
+	#define C0_F		2
+	#define C1_F		4
+	#define C2_F		8
+	#define C3_F		16
 	
-	float active_holder = 0;
-	float active_panel0 = 0;
-	float active_panel1 = 0;
-	float active_panel2 = 0;
-	float active_panel3 = 0;
+	float panel1 = 0;
+	string pass1 = "";
 	
-	string tmp0 = "0";
-	string tmp1 = "1";
-	string tmp2 = "2";
+	float panel2 = 0;
+	string pass2 = "";	
+	
+	void logout( string id ) {
+		entity ent;
+		
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+		ent.setGuiParm( "gui_parm6" , 3 );
+	}
+	
+	void uninstall_mb( string id ) {
+		entity ent;
+		float i;
+		
+		if( id == "1" ) {
+			panel1 = 0;
+		} else if( id == "1" ) {
+			panel2 = 0;
+		}
+		
+		for( i = 0; i < 4; i++ ) {
+			ent = sys.getEntity( "light_p"+id+"_"+i );
+			ent.setColor(1, 0, 0);
+		}
+		
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+		ent.setGuiParm( "gui_parm12" , 2 );	// holder
+		ent.setGuiParm( "gui_parm13" , 2 );	// 0
+		ent.setGuiParm( "gui_parm14" , 2 );	// 1
+		ent.setGuiParm( "gui_parm15" , 2 ); // 2
+		ent.setGuiParm( "gui_parm16" , 2 ); // 3
+		ent.setGuiParm( "gui_parm6" , 4 );
 
-	void set_code() {
+		sys.print( "uninstall_mb\n" );
 	}
 	
-	void test1() {
-		sys.print( "test1\n" );
-	}
-	
-	void test2() {
-		sys.print( "test2\n" );
-	}	
-
-	void new_pass() {
-		tmp0 = $solar_panel_terminal.getGuiParm( "gui_parm1" );
-		tmp1 = $solar_panel_terminal.getGuiParm( "gui_parm2" );
-		tmp2 = $solar_panel_terminal.getGuiParm( "gui_parm3" );	
-	}
-	
-	void logout() {
-		$solar_panel_terminal.setGuiParm( "gui_parm6" , 3 );
-	}
-	
-	void uninstall_mb() {
-		active_holder = 0;
-		active_panel0 = 0;
-		active_panel1 = 0;
-		active_panel2 = 0;
-		active_panel3 = 0;
-		$solar_panel_terminal.setGuiParm( "gui_parm6" , 4 );
-	}
-	
-	void install_mb() {
-		string cmd;
+	void install_mb( string id ) {
+		entity mb;
 		
-		cmd = $solar_panel_mb.getGuiParm( "gui_parm5" );
+		mb = sys.getEntity( "solar_panel_mb"+id );
 		
-		tmp0 = sys.strMid( cmd, 0, 1 );
-		tmp1 = sys.strMid( cmd, 1, 1 );
-		tmp2 = sys.strMid( cmd, 2, 1 );
+		pass1 = mb.getGuiParm( "gui_parm5" );
 		
-		$solar_panel_terminal.setGuiParm( "gui_parm6" , 5 );
+		mb = sys.getEntity( "solar_panel_terminal"+id );
+		mb.setGuiParm( "gui_parm6" , 5 );
 	}
 	
-	void verify_pass() {
-		if( $solar_panel_terminal.getGuiParm( "gui_parm1" ) == tmp0 && $solar_panel_terminal.getGuiParm( "gui_parm2" ) == tmp1 && $solar_panel_terminal.getGuiParm( "gui_parm3" ) == tmp2 ) {
-			$solar_panel_terminal.setGuiParm( "gui_parm6" , 1 );	
+	void verify_pass( string id ) {
+		entity sp;
+		sp = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !sp ) {
+			return;
+		}
+	
+		if( sp.getGuiParm( "gui_parm1" ) == sys.strMid( pass1, 0, 1 ) && sp.getGuiParm( "gui_parm2" ) == sys.strMid( pass1, 1, 1 ) && sp.getGuiParm( "gui_parm3" ) == sys.strMid( pass1, 2, 1 ) ) {
+			sp.setGuiParm( "gui_parm6" , 1 );	
 			sys.print( "verify_pass ok\n" );
 		} else {
-			$solar_panel_terminal.setGuiParm( "ns0f" , 1 );	// force
-			$solar_panel_terminal.setGuiParm( "gui_parm6" , 2 );
-			sys.print( "verify_pass not ok " + $solar_panel_terminal.getGuiParm( "gui_parm1" ) + $solar_panel_terminal.getGuiParm( "gui_parm2" ) + $solar_panel_terminal.getGuiParm( "gui_parm3" ) + "\n" );
+			sp.setGuiParm( "ns0f" , 1 );	// force
+			sp.setGuiParm( "gui_parm6" , 2 );
+			sys.print( "verify_pass not ok " + sp.getGuiParm( "gui_parm1" ) + sp.getGuiParm( "gui_parm2" ) + sp.getGuiParm( "gui_parm3" ) + "\n" );
 			
 		}
 	}
 	
-	void func_holder() {
-		if( active_holder == 1 ) {
-			sys.print( "func_holder 1 \n" );
-			active_holder = 0;	
-			$solar_panel_terminal.setGuiParm( "gui_parm12" , 2 );			
-		} else {
-			sys.print( "func_holder 0 \n" );
-			active_holder = 1;
-			$solar_panel_terminal.setGuiParm( "gui_parm12" , 1 );			
+	void func_holder( string id ) {
+		entity ent;
+	
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !ent ) {
+			return;
+		}
+	
+		if( id == "1" ) {
+			if( panel1 & HOLDER_F ) {
+				panel1 = panel1 ^ HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 2 );
+			} else {
+				panel1 |= HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 1 );	
+			}
+		} else if( id == "2" ) {
+			if( panel2 & HOLDER_F ) {
+				panel2 = panel2 ^ HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 2 );
+			} else {
+				panel2 |= HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 1 );	
+			}
+		}
+		
+	}
+	
+	void func_p0( string id ) {	
+		entity ent;
+		entity l;
+	
+		l = sys.getEntity( "light_p"+id+"_0" );
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !ent || !l ) {
+			return;
+		}	
+
+		if( id == "1" ) {
+			if( panel1 & C0_F ) {
+				panel1 = panel1 ^ C0_F;
+				ent.setGuiParm( "gui_parm13" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel1 |= C0_F;
+				ent.setGuiParm( "gui_parm13" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "2" ) {
+			if( panel2 & C0_F ) {
+				panel2 = panel2 ^ C0_F;
+				ent.setGuiParm( "gui_parm13" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel2 |= C0_F;
+				ent.setGuiParm( "gui_parm13" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}
 	
-	void func_p0() {	
-		if( active_panel0 == 1 ) {
-			sys.print( "func_p0 1 \n" );
-			active_panel0 = 0;	
-			$solar_panel_terminal.setGuiParm( "gui_parm13" , 2 );	
-			$light_p0_0.setColor(1, 0, 0);
-		} else {
-			sys.print( "func_p0 0\n" );
-			active_panel0 = 1;
-			$solar_panel_terminal.setGuiParm( "gui_parm13" , 1 );	
-			$light_p0_0.setColor(0, 1, 0);
-		}
-	}
+	void func_p1( string id ) {
+		entity ent;
+		entity l;
 	
-	void func_p1() {
-		if( active_panel1 == 1 ) {
-			active_panel1 = 0;	
-			$solar_panel_terminal.setGuiParm( "gui_parm14" , 2 );		
-			$light_p0_1.setColor(1, 0, 0);
-		} else {
-			active_panel1 = 1;
-			$solar_panel_terminal.setGuiParm( "gui_parm14" , 1 );		
-			$light_p0_1.setColor(0, 1, 0);
+		l = sys.getEntity( "light_p"+id+"_1" );
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !ent || !l ) {
+			return;
+		}	
+
+		if( id == "1" ) {
+			if( panel1 & C1_F ) {
+				panel1 = panel1 ^ C1_F;
+				ent.setGuiParm( "gui_parm14" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel1 |= C1_F;
+				ent.setGuiParm( "gui_parm14" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "2" ) {
+			if( panel2 & C1_F ) {
+				panel2 = panel2 ^ C1_F;
+				ent.setGuiParm( "gui_parm14" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel2 |= C1_F;
+				ent.setGuiParm( "gui_parm14" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}	
 	
-	void func_p2() {
-		if( active_panel2 == 1 ) {
-			active_panel2 = 0;	
-			$solar_panel_terminal.setGuiParm( "gui_parm15" , 2 );	
-			$light_p0_2.setColor(1, 0, 0);
-		} else {
-			active_panel2 = 1;
-			$solar_panel_terminal.setGuiParm( "gui_parm15" , 1 );			
-			$light_p0_2.setColor(0, 1, 0);
+	void func_p2( string id ) {
+		entity ent;
+		entity l;
+	
+		l = sys.getEntity( "light_p"+id+"_2" );
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !ent || !l ) {
+			return;
+		}	
+
+		if( id == "1" ) {
+			if( panel1 & C2_F ) {
+				panel1 = panel1 ^ C2_F;
+				ent.setGuiParm( "gui_parm15" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel1 |= C2_F;
+				ent.setGuiParm( "gui_parm15" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "2" ) {
+			if( panel2 & C2_F ) {
+				panel2 = panel2 ^ C2_F;
+				ent.setGuiParm( "gui_parm15" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel2 |= C2_F;
+				ent.setGuiParm( "gui_parm15" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}
 	
-	void func_p3() {
-		if( active_panel3 == 1 ) {
-			active_panel3 = 0;	
-			$solar_panel_terminal.setGuiParm( "gui_parm16" , 2 );	
-			$light_p0_3.setColor(1, 0, 0);
-		} else {
-			active_panel3 = 1;
-			$solar_panel_terminal.setGuiParm( "gui_parm16" , 1 );	
-			$light_p0_3.setColor(0, 1, 0);
+	void func_p3( string id ) {
+		entity ent;
+		entity l;
+	
+		l = sys.getEntity( "light_p"+id+"_3" );
+		ent = sys.getEntity( "solar_panel_terminal"+id );
+	
+		if( !ent || !l ) {
+			return;
+		}	
+
+		if( id == "1" ) {
+			if( panel1 & C3_F ) {
+				panel1 = panel1 ^ C3_F;
+				ent.setGuiParm( "gui_parm16" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel1 |= C3_F;
+				ent.setGuiParm( "gui_parm16" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "2" ) {
+			if( panel2 & C3_F ) {
+				panel2 = panel2 ^ C3_F;
+				ent.setGuiParm( "gui_parm16" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel2 |= C3_F;
+				ent.setGuiParm( "gui_parm16" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}	
 
@@ -135,39 +248,12 @@ namespace map_test2 {
 		}	
 	}
 	
-	void checkLights() {
-		if( active_panel0 == 1 ) {
-			$light_p0_0.setColor(0, 1, 0);
-		} else {
-			$light_p0_0.setColor(1, 0, 0);
-		}
-		
-		if( active_panel1 == 1 ) {
-			$light_p0_1.setColor(0, 1, 0);
-		} else {
-			$light_p0_1.setColor(1, 0, 0);
-		}
-
-		if( active_panel2 == 1 ) {
-			$light_p0_2.setColor(0, 1, 0);
-		} else {
-			$light_p0_2.setColor(1, 0, 0);
-		}
-
-		if( active_panel3 == 1 ) {
-			$light_p0_3.setColor(0, 1, 0);
-		} else {
-			$light_p0_3.setColor(1, 0, 0);
-		}	
-	}
-	
-	void move_holder() {
+	void move_holder( string signal ) {
 		vector l;
 		vector s;
 		float horizontal;
 		vector a;
 		vector b;
-		float tmp;
 	
 		float y;
 		float vertical;
@@ -175,65 +261,71 @@ namespace map_test2 {
 		float h;
 		float v;
 	
-		s = $phold_ver.getWorldOrigin();
+		float sig;
+		entity holder_ver;
+		entity holder_hor;
+		
+		holder_ver = sys.getEntity( "phold_ver"+signal );
+		holder_hor = sys.getEntity( "phold_hor"+signal );
+		
+		s = holder_ver.getWorldOrigin();
 		
 		// check for a status change
 		while( 1 ) {
 		
-			//checkLights();
+			if( signal == "1" ) {
+				sig = panel1 & HOLDER_F;
+			} else if( signal == "2" ) {
+				sig = panel2 & HOLDER_F;
+			} 
 			
-		while( active_holder ) {			
-			l = $solar_holder.getWorldOrigin();
-			a = $phold_ver.getAngles();
-			b = $phold_hor.getAngles();
-			
-			//checkLights();
-			
-			horizontal = sys.atan2deg( l_y - s_y, l_x - s_x );
+				
+			if( sig ) {
+				l = $solar_holder.getWorldOrigin();	// $solar_holder stands alone
+				a = holder_ver.getAngles();
+				b = holder_hor.getAngles();
+				
+				horizontal = sys.atan2deg( l_y - s_y, l_x - s_x );
 
-			// FIXME: this looks inaccurate
-			//vertical = sys.atan2deg( l_z - s_z, l_x - s_x );
-			//vertical = sys.acosdeg( ( s_x * l_x + s_y * l_y + s_z * l_z ) / ( sys.sqrt( s_x*s_x + s_y*s_y + s_z*s_z ) * sys.sqrt( l_x*l_x + l_y*l_y + l_z*l_z ) ) );			
-			vertical = sys.Vec3Angle( s, l ) * 3.14;
-			
-			y = a_y;
-			
-			if( vertical < 90.0f ) {	
-				vertical = 90 - vertical;
-			} else {
-				vertical = vertical - 90;
+				// FIXME: this looks inaccurate
+				//vertical = sys.atan2deg( l_z - s_z, l_x - s_x );
+				//vertical = sys.acosdeg( ( s_x * l_x + s_y * l_y + s_z * l_z ) / ( sys.sqrt( s_x*s_x + s_y*s_y + s_z*s_z ) * sys.sqrt( l_x*l_x + l_y*l_y + l_z*l_z ) ) );			
+				vertical = sys.Vec3Angle( s, l ) * 3.14;
+				
+				y = a_y;
+				
+				//sys.print( "vertical "+ vertical + "\n" );
+				
+				if( vertical < 180.0f ) {	
+					vertical = 180 - vertical;
+				} else {
+					vertical = vertical - 180;
+				}
+				
+				if( vertical > b_x ) {
+					h = thread entRotate( holder_hor, X_AXIS, vertical, 0 );	
+				} else {
+					h = thread entRotate( holder_hor, X_AXIS, vertical, 1 );				
+				}		
+				sys.waitForThread( h );	
+				
+				if( horizontal < 0 ) {
+					horizontal += 360;
+				}				
+				if( y < 0 ) {
+					y += 360;
+				}
+				
+				// FIXME: clockwise when > 360
+				if( horizontal > y || (y - horizontal) > 180 ) {
+					v = thread entRotate( holder_ver, Y_AXIS, horizontal, 0 );
+				} else {			
+					v = thread entRotate( holder_ver, Y_AXIS, horizontal, 1 );
+				}
+				sys.waitForThread( v );
+							
 			}
-		
-			if( vertical > b_x ) {
-				$phold_hor.rotateUpTo( X_AXIS, vertical );	
-				h = thread entRotate( $phold_hor, X_AXIS, vertical, 0 );	
-			} else {
-				//$phold_hor.rotateDownTo( X_AXIS, vertical );
-				h = thread entRotate( $phold_hor, X_AXIS, vertical, 1 );				
-			}		
-			sys.waitForThread( h );	
-			
-			if( horizontal < 0 ) {
-				horizontal += 360;
-			}				
-			if( y < 0 ) {
-				y += 360;
-			}
-			
-			// FIXME: clockwise when > 360
-			if( horizontal > y || (y - horizontal) > 180 ) {
-				//v = thread entRotateUp( $phold_ver.rotateUpTo( Y_AXIS, horizontal );
-				v = thread entRotate( $phold_ver, Y_AXIS, horizontal, 0 );
-			} else {
-				//$phold_ver.rotateDownTo( Y_AXIS, horizontal );			
-				v = thread entRotate( $phold_ver, Y_AXIS, horizontal, 1 );
-			}
-			sys.waitForThread( v );
-					
-			sys.wait( .05 );		
-		}
 			sys.wait( 0.1 );
 		}
 	}
-
 }
