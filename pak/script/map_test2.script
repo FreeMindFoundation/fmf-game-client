@@ -1,6 +1,7 @@
-#include "script/map_test2_crane.script"
-#include "script/map_test2_airlock.script"
+//#include "script/map_test2_crane.script"
+//#include "script/map_test2_airlock.script"
 #include "script/map_test2_solarpanel.script"
+#include "script/map_test2_electricity.script"
 
 namespace map_test2 {
 
@@ -61,14 +62,18 @@ namespace map_test2 {
 	}
 	
 	void main() {
-		setup_objects();
-		init_crane();
-	
+		//setup_objects();
+		//init_crane();
+		
 		thread solar_source();
 		
 		thread move_holder( "1" );
 		thread move_holder( "2" );
+		thread move_holder( "3" );
+		thread move_holder( "4" );
 
-		thread airlock2_door2_open();
+		thread check_electricity();
+		
+		//thread airlock2_door2_open();
 	}
 }

@@ -4,12 +4,19 @@ namespace map_test2 {
 	#define C1_F		4
 	#define C2_F		8
 	#define C3_F		16
+	#define ELEC_GAIN	500		// watts
 	
+	float elecGain = 0;
+	float elecUsage = 0;
+		
 	float panel1 = 0;
-	string pass1 = "";
-	
+	string pass1 = "";	
 	float panel2 = 0;
-	string pass2 = "";	
+	string pass2 = "";		
+	float panel3 = 0;
+	string pass3 = "";	
+	float panel4 = 0;
+	string pass4 = "";	
 	
 	void logout( string id ) {
 		entity ent;
@@ -24,8 +31,12 @@ namespace map_test2 {
 		
 		if( id == "1" ) {
 			panel1 = 0;
-		} else if( id == "1" ) {
+		} else if( id == "2" ) {
 			panel2 = 0;
+		} else if( id == "3" ) {
+			panel3 = 0;
+		} else if( id == "4" ) {
+			panel4 = 0;
 		}
 		
 		for( i = 0; i < 4; i++ ) {
@@ -99,6 +110,22 @@ namespace map_test2 {
 				panel2 |= HOLDER_F;
 				ent.setGuiParm( "gui_parm12" , 1 );	
 			}
+		} else if( id == "3" ) {
+			if( panel3 & HOLDER_F ) {
+				panel3 = panel3 ^ HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 2 );
+			} else {
+				panel3 |= HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 1 );	
+			}
+		} else if( id == "4" ) {
+			if( panel4 & HOLDER_F ) {
+				panel4 = panel4 ^ HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 2 );
+			} else {
+				panel4 |= HOLDER_F;
+				ent.setGuiParm( "gui_parm12" , 1 );	
+			}
 		}
 		
 	}
@@ -131,6 +158,26 @@ namespace map_test2 {
 				l.setColor(1, 0, 0);
 			} else {
 				panel2 |= C0_F;
+				ent.setGuiParm( "gui_parm13" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "3" ) {
+			if( panel3 & C0_F ) {
+				panel3 = panel3 ^ C0_F;
+				ent.setGuiParm( "gui_parm13" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel3 |= C0_F;
+				ent.setGuiParm( "gui_parm13" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "4" ) {
+			if( panel4 & C0_F ) {
+				panel4 = panel4 ^ C0_F;
+				ent.setGuiParm( "gui_parm13" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel4 |= C0_F;
 				ent.setGuiParm( "gui_parm13" , 1 );	
 				l.setColor(0, 1, 0);
 			}
@@ -168,6 +215,26 @@ namespace map_test2 {
 				ent.setGuiParm( "gui_parm14" , 1 );	
 				l.setColor(0, 1, 0);
 			}
+		} else if( id == "3" ) {
+			if( panel3 & C1_F ) {
+				panel3 = panel3 ^ C1_F;
+				ent.setGuiParm( "gui_parm14" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel3 |= C1_F;
+				ent.setGuiParm( "gui_parm14" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "4" ) {
+			if( panel4 & C1_F ) {
+				panel4 = panel4 ^ C1_F;
+				ent.setGuiParm( "gui_parm14" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel4 |= C1_F;
+				ent.setGuiParm( "gui_parm14" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}	
 	
@@ -199,6 +266,26 @@ namespace map_test2 {
 				l.setColor(1, 0, 0);
 			} else {
 				panel2 |= C2_F;
+				ent.setGuiParm( "gui_parm15" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "3" ) {
+			if( panel3 & C2_F ) {
+				panel3 = panel3 ^ C2_F;
+				ent.setGuiParm( "gui_parm15" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel3 |= C2_F;
+				ent.setGuiParm( "gui_parm15" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "4" ) {
+			if( panel4 & C2_F ) {
+				panel4 = panel4 ^ C2_F;
+				ent.setGuiParm( "gui_parm15" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel4 |= C2_F;
 				ent.setGuiParm( "gui_parm15" , 1 );	
 				l.setColor(0, 1, 0);
 			}
@@ -236,6 +323,26 @@ namespace map_test2 {
 				ent.setGuiParm( "gui_parm16" , 1 );	
 				l.setColor(0, 1, 0);
 			}
+		} else if( id == "3" ) {
+			if( panel3 & C3_F ) {
+				panel3 = panel3 ^ C3_F;
+				ent.setGuiParm( "gui_parm16" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel3 |= C3_F;
+				ent.setGuiParm( "gui_parm16" , 1 );	
+				l.setColor(0, 1, 0);
+			}
+		} else if( id == "4" ) {
+			if( panel4 & C3_F ) {
+				panel4 = panel4 ^ C3_F;
+				ent.setGuiParm( "gui_parm16" , 2 );
+				l.setColor(1, 0, 0);
+			} else {
+				panel4 |= C3_F;
+				ent.setGuiParm( "gui_parm16" , 1 );	
+				l.setColor(0, 1, 0);
+			}
 		}
 	}	
 
@@ -270,6 +377,8 @@ namespace map_test2 {
 		
 		s = holder_ver.getWorldOrigin();
 		
+		entRotate( holder_hor, X_AXIS, 45, 0 );
+		
 		// check for a status change
 		while( 1 ) {
 		
@@ -277,30 +386,35 @@ namespace map_test2 {
 				sig = panel1 & HOLDER_F;
 			} else if( signal == "2" ) {
 				sig = panel2 & HOLDER_F;
-			} 
+			} else if( signal == "3" ) {
+				sig = panel3 & HOLDER_F;
+			} else if( signal == "4" ) {
+				sig = panel4 & HOLDER_F;
+			}  
 			
 				
 			if( sig ) {
 				l = $solar_holder.getWorldOrigin();	// $solar_holder stands alone
 				a = holder_ver.getAngles();
-				b = holder_hor.getAngles();
+				//b = holder_hor.getAngles();
 				
 				horizontal = sys.atan2deg( l_y - s_y, l_x - s_x );
 
 				// FIXME: this looks inaccurate
 				//vertical = sys.atan2deg( l_z - s_z, l_x - s_x );
 				//vertical = sys.acosdeg( ( s_x * l_x + s_y * l_y + s_z * l_z ) / ( sys.sqrt( s_x*s_x + s_y*s_y + s_z*s_z ) * sys.sqrt( l_x*l_x + l_y*l_y + l_z*l_z ) ) );			
-				vertical = sys.Vec3Angle( s, l ) * 3.14;
+				//vertical = sys.Vec3Angle( s, l ) * 3.14;
 				
 				y = a_y;
 				
 				//sys.print( "vertical "+ vertical + "\n" );
-				
+				/*
 				if( vertical < 180.0f ) {	
 					vertical = 180 - vertical;
 				} else {
 					vertical = vertical - 180;
 				}
+				
 				
 				if( vertical > b_x ) {
 					h = thread entRotate( holder_hor, X_AXIS, vertical, 0 );	
@@ -308,7 +422,7 @@ namespace map_test2 {
 					h = thread entRotate( holder_hor, X_AXIS, vertical, 1 );				
 				}		
 				sys.waitForThread( h );	
-				
+				*/
 				if( horizontal < 0 ) {
 					horizontal += 360;
 				}				
@@ -317,15 +431,55 @@ namespace map_test2 {
 				}
 				
 				// FIXME: clockwise when > 360
+				
 				if( horizontal > y || (y - horizontal) > 180 ) {
-					v = thread entRotate( holder_ver, Y_AXIS, horizontal, 0 );
+					//v = thread entRotate( holder_ver, Y_AXIS, horizontal, 0 );
+					entRotate( holder_ver, Y_AXIS, horizontal, 0 );
 				} else {			
-					v = thread entRotate( holder_ver, Y_AXIS, horizontal, 1 );
+					//v = thread entRotate( holder_ver, Y_AXIS, horizontal, 1 );
+					entRotate( holder_ver, Y_AXIS, horizontal, 1 );
 				}
-				sys.waitForThread( v );
-							
+				
+				//sys.waitForThread( v );
+					
+				sys.waitFor( holder_ver );
+				sys.wait( 5 );
 			}
-			sys.wait( 0.1 );
+			sys.wait( 0.5 );
 		}
 	}
+	
+	void solar_collect( float p ) {		
+		if( p & HOLDER_F ) {
+			if( p & C0_F ) {
+				elecGain += ELEC_GAIN;
+			}
+			if( p & C1_F ) {
+				elecGain += ELEC_GAIN;
+			}			
+			if( p & C2_F ) {
+				elecGain += ELEC_GAIN;
+			}			
+			if( p & C1_F ) {
+				elecGain += ELEC_GAIN;
+			}			
+		}	
+	}
+	
+	void check_electricity() {
+		
+		while( 1 ) {
+			solar_collect( panel1 );
+			solar_collect( panel2 );
+			solar_collect( panel3 );
+			solar_collect( panel4 );
+		
+			sys.print( "elec gain "+ elecGain + "\n");
+		
+			elecGain = 0;
+			sys.wait( 2 );
+		}
+		
+	}
+	
 }

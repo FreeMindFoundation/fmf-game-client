@@ -969,7 +969,7 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 	int				numSourceAreas, sourceAreas[ idEntity::MAX_PVS_AREAS ];
 	idWeapon		*weap;
 
-	//common->Printf( "snapshot size: %d\n", msg.GetSize() );
+	common->Printf( "snapshot size: %d\n", msg.GetSize() );
 
 	if ( net_clientLagOMeter.GetBool() && renderSystem ) {
 		UpdateLagometer( aheadOfServer, dupeUsercmds );
