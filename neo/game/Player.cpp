@@ -4175,7 +4175,6 @@ bool idPlayer::HandleSingleGuiCommand( idEntity *entityGui, idLexer *src ) {
 		return false;
 	}
 
-	
 	if ( token.Icmp( "programSolarMB" ) == 0 ) {
 		int inum;
 

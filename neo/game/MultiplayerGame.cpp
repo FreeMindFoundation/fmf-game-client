@@ -106,6 +106,7 @@ idMultiplayerGame::idMultiplayerGame() {
 	filesGui = NULL;
 	terminalGui = NULL;
 	itemsGui = NULL;
+	itemsList = NULL;
 	lastGameType = GAME_SP;
 	Clear();
 }
@@ -180,6 +181,8 @@ void idMultiplayerGame::Reset() {
 	terminalGui->SetStateBool( "gameDraw", true );
 	itemsGui = uiManager->FindGui( "guis/itemsterminal.gui", true, false, true );
 	itemsGui->SetStateBool( "gameDraw", true );
+	itemsList = uiManager->AllocListGUI( );
+	itemsList->Config( itemsGui, "itemsList" );
 	ClearGuis();
 	ClearChatData();
 	warmupEndTime = 0;
@@ -256,6 +259,12 @@ void idMultiplayerGame::Clear() {
 		uiManager->FreeListGUI( mapList );
 		mapList = NULL;
 	}
+
+	if( itemsList ) {
+		uiManager->FreeListGUI( itemsList );
+		itemsList = NULL;
+	}
+
 	fragLimitTimeout = 0;
 	memset( &switchThrottle, 0, sizeof( switchThrottle ) );
 	voiceChatThrottle = 0;
@@ -2586,7 +2595,6 @@ void idMultiplayerGame::DropWeapon_f( const idCmdArgs &args ) {
 	networkSystem->ClientSendReliableMessage( outMsg );
 }
 
-
 void idMultiplayerGame::FilesMode_f( const idCmdArgs &args ) {
 	gameLocal.mpGame.FilesMode( args );
 }
@@ -2625,9 +2633,15 @@ void idMultiplayerGame::ItemsMode( const idCmdArgs &args ) {
 	}
 	
 	int i;
+	idStr argv; 
+
+	itemsGui->SetStateString( "item_source", "" );
+	itemsList->SetSelection( -1 );
+	itemsList->Clear();
 
 	for( i = 0; i < args.Argc(); i++ ) {
-		itemsGui->SetStateString( va( "%s_item_%i", "itemsList", i ), args.Argv( i ) );
+		argv = args.Argv( i );
+		itemsList->Add( i, argv );
 	}
 
 	nextMenu = 5;
@@ -2642,8 +2656,7 @@ void idMultiplayerGame::FilesMode( const idCmdArgs &args ) {
 	
 	int i;
 
-	for( i = 0; i < args.Argc(); i++ ) {
-		
+	for( i = 0; i < args.Argc(); i++ ) {		
 		filesGui->SetStateString( va( "%s_item_%i", "filesList", i ), args.Argv( i ) );
 	}
 
@@ -3327,6 +3340,10 @@ void idMultiplayerGame::TerminalItems( idUserInterface *gui, const int type ) {
 
 	sel = gui->State().GetInt( va( "%s_sel_0", "itemsList" ), "-1" );
 	
+	if( sel < 0 ) {
+		return;
+	}
+
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_TERMINAL );
 	if( 0 == type ) {

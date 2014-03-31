@@ -292,6 +292,7 @@ private:
 	idUserInterface *msgmodeGui;			// message mode
 	idUserInterface *filesGui;
 	idUserInterface *itemsGui;
+	idListGUI		*itemsList;
 	idUserInterface *terminalGui;
 	int				currentMenu;			// 0 - none, 1 - mainGui, 2 - msgmodeGui, 3 - filesGui, 4 - terminal
 	int				nextMenu;				// if 0, will do mainGui
