@@ -1,7 +1,6 @@
 //#include "script/map_test2_crane.script"
 //#include "script/map_test2_airlock.script"
 #include "script/map_test2_solarpanel.script"
-#include "script/map_test2_electricity.script"
 
 namespace map_test2 {
 
